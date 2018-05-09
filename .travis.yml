@@ -1,0 +1,14 @@
+language: cpp
+sudo: required
+compiler: 
+ - gcc
+before_install:
+ - sudo apt-get install g++
+ - sudo apt-get install build-essential
+ - sudo atp-get install zlib1g-dev
+ - sudo atp-get install libbz2-dev
+ - sudo atp-get install libncurses5-dev
+ - sudo atp-get install liblzma-dev
+os:
+ - linux
+script: src/make
