@@ -11,4 +11,4 @@ before_install:
  - sudo apt-get install liblzma-dev
 os:
  - linux
-script: src/make
+script: cd src && make
