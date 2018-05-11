@@ -4,4 +4,6 @@ FALCON-Phase integrates PacBio long-read assemblies with Phase Genomics Hi-C dat
 ![FP logo](https://github.com/phasegenomics/FALCON-Phase/blob/master/logo/FP.png)
 
 
- [![Build Status](https://travis-ci.org/phasegenomics/FALCON-Phase.svg?branch=master)](https://travis-ci.org/phasegenomics/FALCON-Phase)[![Analytics]
+
+ [![Build Status](https://travis-ci.com/phasegenomics/FALCON-Phase.svg?branch=master)](https://travis-ci.com/phasegenomics/FALCON-Phase)[![Analytics]
+
