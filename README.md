@@ -19,7 +19,7 @@ The version numbers of the dependances are listed below, but new/older versions 
 In addition, the **NumPy** library is required.
 
 
-## Install process
+## Install process :floppy_disk:
 
 Cloning the repository downloads the pipeline, the source code, and HTSLIB. 
 
