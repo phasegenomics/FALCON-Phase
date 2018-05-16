@@ -137,7 +137,7 @@ snakemake -j 50 --cluster-config cluster.config.sge.json --cluster "qsub -S {clu
 
 The FALCON-Phase pipeline has a number of steps that are implemented by rules in the `snakefile`. `Snakemake` implements the rules from bottom to top in the `snakefile`. Details about each step can be found in our [preprint](brokenlink) and are summarized in the figure below:
 
-![FP Workflow](https://github.com/phasegenomics/FALCON-Phase/blob/master/logo/FALCONphaseFig1.pdf)
+![FP Workflow](https://github.com/phasegenomics/FALCON-Phase/blob/master/logo/FALCONphaseFig1.png)
 
 1. haplotig placement
 
