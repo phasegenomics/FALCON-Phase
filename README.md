@@ -113,12 +113,18 @@ Snakemake will start printing information to your screen about the process. This
 
 5b. Run the `snakemake` on a cluster. Snakemake can be run on a cluster and submit jobs the scheduler. We have included an SGE cluster config file as an example. The table below explains the fields in the `cluster.config.sge.json`. 
 
-| Key          | Value                                 | Explanation                                      |
-| ------------ |:-------------------------------------:|:------------------------------------------------ |
-| S        | /bin/bash     | The name of the sample, most output files will have this prefix |
-| N  | 3000                                  | The minimal alignment length to consider during haplotig placement |
-| P       | /path/to/name_mapping_tiny.txt        | A file that maps the haplotig names to primary contig names |
-|
+| Field   | Key     | Value           | Explanation                                |
+| ------- | ------- |:---------------:|:------------------------------------------ |
+| default | S       | /bin/bash       | interpreting shell |
+|         | N       | falcon-phase    | job name |
+|         | P       | -cwd            | directory |
+|         | Q       | default         | queue name |
+|         | CPU     | -pe smp 2       | default number of cores requested |
+|         | E       | qsub_log        | dir for stderr |
+|         | O       | qsub_log        | dir for stdout |
+| aln     | CPU     | -pe smp 24      | number of cores requested for bwa mapping |
+
+
 
 Below is the command to run snakemake on PacBio's SGE cluster. This command runs 50 concurrent jobs. You can adjust settings in the `cluster.config.sge.json` file.
 
