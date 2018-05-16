@@ -113,3 +113,6 @@ Snakemake can be run on a cluster and submit jobs the scheduler. We have include
 ```
 snakemake -j 50 --cluster-config cluster.config.sge.json --cluster "qsub -S {cluster.S} -N {cluster.N} {cluster.P} -q {cluster.Q} {cluster.CPU} -e {cluster.E} -o {cluster.O} -V" -s snakefile --verbose -p --latency-wait 60
 ```
+
+
+## Directory Structure and Pipeline Output :rage2:
