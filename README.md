@@ -70,7 +70,7 @@ module load mummer/4.0.0
 
 
 
-### Sample setup
+### Sample setup :link:
 
 | Key          | Value                                 | Explanation                                      |
 | ------------ |:-------------------------------------:|:------------------------------------------------ |
