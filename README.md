@@ -137,6 +137,9 @@ snakemake -j 50 --cluster-config cluster.config.sge.json --cluster "qsub -S {clu
 
 The FALCON-Phase pipeline has 
 
+![FP logo](https://github.com/phasegenomics/FALCON-Phase/blob/master/logo/FP.png)
+
+
 .. code-block:: bash
 
         3-unzip/
