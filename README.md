@@ -106,5 +106,5 @@ snakemake -j 50 --cluster-config pb_cluster.config.sge.json --cluster "qsub -S {
 
 
 
- [![Build Status](https://travis-ci.com/phasegenomics/FALCON-Phase.svg?branch=master)](https://travis-ci.com/phasegenomics/FALCON-Phase)[![Analytics]
+ [![Build Status](https://travis-ci.com/phasegenomics/FALCON-Phase.svg?token=qJUQGbDRUX3LsN3id6ky&branch=master)[![Analytics]
 
