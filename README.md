@@ -8,7 +8,7 @@ FALCON-Phase integrates PacBio long-read assemblies with Phase Genomics Hi-C dat
 
 We did our best to minimize dependances, but there are a number of standard bioinformatics tools required by the pipeline.
 The version numbers of the dependances are listed below, but new/older versions should work, but are untested. The required binaries are specified in the config.json file.  
-
++ **Python    (3.6)**             -  Running Snakemake
 + **Snakemake (3.6)**             -  Running the pipeline interactively or on a cluster 
 + **BWA       (v0.7.17)**         -  Mapping the Hi-C to the minced contigs
 + **Mummer 4  (4.0.0)**           -  Mapping the haplotigs (h contigs)
@@ -16,7 +16,7 @@ The version numbers of the dependances are listed below, but new/older versions 
 + **HSTLIB    (1.5 or greater)**  -  Internal dependency (bundled with FALCON-phase)
 + **SAMTOOLS  (1.5 or greater)**  -  Indexing fasta files
 
-In addition, **PERL**, **Python 3.6**, and the **NumPy** library are required.
+In addition, the **NumPy** library is required.
 
 
 ## Install process
