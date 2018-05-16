@@ -135,9 +135,9 @@ snakemake -j 50 --cluster-config cluster.config.sge.json --cluster "qsub -S {clu
 
 ## Directory Structure and Pipeline Output :cow2:
 
-The FALCON-Phase pipeline has 
+The FALCON-Phase pipeline has a number of steps that are implemented by rules in the `snakefile`. `Snakemake` implements the rules from bottom to top in the `snakefile`. Details about each step can be found in our [preprint](brokenlink) and are summarized in the figure below:
 
-![FP logo](https://github.com/phasegenomics/FALCON-Phase/blob/master/logo/FP.png)
+![FP Workflow](https://github.com/phasegenomics/FALCON-Phase/blob/master/logo/FALCONphaseFig1.pdf)
 
 
 .. code-block:: bash
