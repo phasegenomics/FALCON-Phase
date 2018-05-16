@@ -124,7 +124,7 @@ Snakemake will start printing information to your screen about the process. This
 |         | O       | qsub_log/       | dir for stdout |
 | aln     | CPU     | -pe smp 24      | number of cores requested for bwa mapping |
 
-__NOTES__: the number of CPUs specified in the `cluster.config.sge.json` should match that in environemtal settings in config.json. Make sure you create the `qsub_log` dir before launching the job.
+__NOTES__: the number of CPUs specified in the `cluster.config.sge.json` should match that in environmetal settings in config.json. Make sure you create the `qsub_log` dir before launching the job!!
 
 Below is the command to run snakemake on PacBio's SGE cluster. This command runs 50 concurrent jobs and pulls the other `qsub` parameters from the `cluster.config.sge.json` file.
 
