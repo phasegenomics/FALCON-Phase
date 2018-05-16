@@ -27,7 +27,7 @@ Cloning the repository downloads the pipeline, the source code, and HTSLIB.
 
 After running this command you should see the executable binary `FALCON-Phase/bin/falcon-phase`.
 
-## Running the test dataset :minidisc:
+## Running the test dataset :running:
 
 We have provided a small pseudo test dataset ([sample info](https://www.ncbi.nlm.nih.gov/assembly/GCA_002021895.1/)) to get the pipeline running. 
 
