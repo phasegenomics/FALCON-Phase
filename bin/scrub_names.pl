@@ -18,6 +18,9 @@ This code removes \"|arrow\" from the sequence names and creats the name
 mapping file for the snakemake pipeline. FALCON-Phase expects the p-contig 
 names start with *.F and the h-contigs names follow the *.F_[0-9]+ convention. 
 
+If you've modified your contig names in any way this script will run, but
+the output will not work with the pipeline.
+
 ";
 
 
@@ -27,8 +30,12 @@ my $opt_success = GetOptions('help'    => \$help,
 
 die $usage if $help || ! $opt_success;
 
-my $file = shift;
+my $file  = shift;
+my $fileb = shift;
+ 
 die $usage unless $file;
+die $usage unless $fileb;
+
 open (my $IN, '<', $file) or die "Can't open $file for reading\n$!\n";
 
 my %primaries;
@@ -57,8 +64,6 @@ PRI: while (<$IN>) {
 close $IN;
 close $OUT;
 
-my $fileb = shift;
-die $usage unless $fileb;
 open (my $INB, '<', $fileb) or die "Can't open $fileb for reading\n$!\n";
 
 my @fnameb = split /\./, $fileb;
