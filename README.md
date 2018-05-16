@@ -120,15 +120,13 @@ Snakemake will start printing information to your screen about the process. This
 |         | P       | -cwd            | directory |
 |         | Q       | default         | queue name |
 |         | CPU     | -pe smp 2       | default number of cores requested |
-|         | E       | qsub_log        | dir for stderr |
-|         | O       | qsub_log        | dir for stdout |
+|         | E       | qsub_log/       | dir for stderr |
+|         | O       | qsub_log/       | dir for stdout |
 | aln     | CPU     | -pe smp 24      | number of cores requested for bwa mapping |
 
+__NOTES__: the number of CPUs specified in the `cluster.config.sge.json` should match that in environemtal settings in config.json. Make sure you create the `qsub_log` dir before launching the job.
 
-
-Below is the command to run snakemake on PacBio's SGE cluster. This command runs 50 concurrent jobs. You can adjust settings in the `cluster.config.sge.json` file.
-
-NOTE: stderr and stdout 
+Below is the command to run snakemake on PacBio's SGE cluster. This command runs 50 concurrent jobs and pulls the other `qsub` parameters from the `cluster.config.sge.json` file.
 
 ```
 snakemake -j 50 --cluster-config cluster.config.sge.json --cluster "qsub -S {cluster.S} -N {cluster.N} {cluster.P} -q {cluster.Q} {cluster.CPU} -e {cluster.E} -o {cluster.O} -V" -s snakefile --verbose -p --latency-wait 60
