@@ -66,9 +66,9 @@ The name_mapping.txt file maps each haplotig to a primary contig and is required
 | hpfilt        | /path/to/FALCON-Phase/bin/filt_hp.py              |  Path to filt_hp.py |
 | falcon_phase  | /path/to/FALCON-Phase/bin/falcon-phase            |  Path to falcon-phase | 
 | falcon_oi     | /path/to/FALCON-Phase/bin/primary_contig_index.pl |  Path to primary_contig_index.pl | 
-| bedtools      | /path/to/bedtools                                 |  Path to bedtools| 
-| bwa           | path: /path/to/bwa                                |  Path to bwa|
-| bwa           | cpu: 24                                           |  number of CPUs|
+| bedtools      | /path/to/bedtools                                 |  Path to bedtools | 
+| bwa           | path: /path/to/bwa                                |  Path to bwa |
+| bwa           | cpu: 24                                           |  number of CPUs for bwa mapping |
 
 If you already have binaries for the dependencies via cluster modules you will want to use the `config.sh` to load them. Below is an example `config.sh`. The paths to the binaries in the config.json will need to match where the cluster loads the modules (e.g. `which samtools` returns the path to the binary).
 
@@ -100,16 +100,16 @@ module load mummer/4.0.0
 
 4. Phew! Take a deep breath, you're almost done.
 
-5. Run the `snakemake` pipeline. To do so, on my computer, i need to be in a python 36 virtual environment. This differs between machines, so you'll need to get that sorted out. Here's the command to run the FALCON-Phase snakemake pipeline:
+5. Run the `snakemake` pipeline. To do so, on my computer, I need to be in a python 3.6 virtual environment with numPy libraries loaded. This differs between machines, so you'll need to get that sorted out. Here's the command to run the FALCON-Phase snakemake pipeline:
 
 ```
-(py36) Zevs-MBP-2:pipeline zev$ snakemake -p
+(py36) $ snakemake -s snakefile --verbose -p
 ```
 
-Snakemake will start printing information to your screen about the process. This example dataset only takes a few minutes to run, but a "real" job will take longer and should be run in the background. Once everthing is done you should see the final file `hbird.diploid_phased.fasta` in the pipeline folder.
+Snakemake will start printing information to your screen about the process. This example dataset only takes a few minutes to run, but a "real" job will take longer and should be run in the background. Once everthing is done you should see the final file `test.diploid_phased.fasta` in the pipeline folder.
 
 Snakemake can be run on a cluster and submit jobs the scheduler. We have included an SGE cluster config file as an example. However, you'll need to setup the cluster config to match your cluster's settings. Below is the command to run snakemake on PacBio's SGE cluster.
 
 ```
-snakemake -j 50 --cluster-config pb_cluster.config.sge.json --cluster "qsub -S {cluster.S} -N {cluster.N} {cluster.P} -q {cluster.Q} {cluster.CPU} -e {cluster.E} -o {cluster.O} -V" -s snakefile --verbose -p --latency-wait 60
+snakemake -j 50 --cluster-config cluster.config.sge.json --cluster "qsub -S {cluster.S} -N {cluster.N} {cluster.P} -q {cluster.Q} {cluster.CPU} -e {cluster.E} -o {cluster.O} -V" -s snakefile --verbose -p --latency-wait 60
 ```
