@@ -18,7 +18,7 @@
         "sample": {
                   "name"        : "test_data",
                   "min_aln_len" : "5000",
-                  "h_to_p"      : "name_mapping.txt",
+                  "p_to_h"      : "name_mapping.txt",
                   "p_ctgs"      : "/path/to/FALCON-Phase/test_data/cns_p_ctg.fasta",
                   "h_ctgs"      : "/path/to/FALCON-Phase/test_data/cns_h_ctg.fasta",
                   "r1"          : "/path/to/FALCON-Phase/test_data/S3HiC_R1.fastq",

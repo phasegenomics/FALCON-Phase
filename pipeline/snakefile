@@ -9,7 +9,7 @@ SAMPLES = config['sample']['name']
 
 PRIMARY    = collections.defaultdict(lambda: [])
 
-with open(config['sample']["h_to_p"]) as tsv:
+with open(config['sample']["p_to_h"]) as tsv:
     for line in csv.reader(tsv, delimiter="\t"):
     	PRIMARY[line[0]].append("{0}".format(line[1]))
 
