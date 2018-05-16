@@ -27,7 +27,7 @@ Cloning the repository downloads the pipeline, the source code, and HTSLIB.
 
 After running this command you should see the executable binary `FALCON-Phase/bin/falcon-phase`.
 
-## Running the test dataset
+## Running the test dataset :minidisc:
 
 We have provided a small pseudo test dataset ([sample info](https://www.ncbi.nlm.nih.gov/assembly/GCA_002021895.1/)) to get the pipeline running. 
 
@@ -39,7 +39,7 @@ We have provided a small pseudo test dataset ([sample info](https://www.ncbi.nlm
 
 3. Edit the config.json, filling out the paths to the dependencies, and sample information. The tables below explains the fields in the config file. 
 
-### Enviromental setup
+### Enviromental setup :vhs:
 
 | Key           | Value                                             | Explanation     |
 | ------------- |:-------------------------------------------------:|:---------------|
