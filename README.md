@@ -40,6 +40,8 @@ Usage:
 
 ```scrub_names.pl p-contigs.fa h-contigs.fa > name_mapping.txt```
 
+The name_mapping.txt file maps each haplotig to the primary contig
+
 3. Go into the pipeline folder.
 
 ```cd pipeline```
