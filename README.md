@@ -40,27 +40,26 @@ We have provided a small pseudo test dataset ([sample info](https://www.ncbi.nlm
 
 ### Enviromental setup
 
-| Key          | Value | Explanation  |
-| ------------- |:-------------:|:-----|
-| env           | config.sh     | This file is sourced by the shell and loads enviromental variables |
-| CPU | number of CPUs to use   |   2 |
-| nucmer | /path/to/mummer/bin/nucmer     |   Path to nucmer |
-| delta-filter | /path/to/mummer/bin/delta-filter    |   Path to delta-filter |
-| show-coords | /path/to/mummer/bin/show-coords   |   Path to show-coords |
-| samtools | /path/to/samtools   |   Path to samtools |
- | hp | /path/to/FALCON-Phase/bin/coords2hp.py  |  Path to coords2hp.py |
-  | hpfilt | /path/to/FALCON-Phase/bin/filt_hp.py |  Path to filt_hp.py |
-  | falcon_phase |/path/to/FALCON-Phase/bin/falcon-phase |  Path to falcon-phase | 
-  | falcon_oi | /path/to/FALCON-Phase/bin/primary_contig_index.pl |  Path to primary_contig_index.pl | 
-  | bedtools | /path/to/bedtools |  Path to bedtools| 
-  | bwa | path: /path/to/bwa |  Path to bwa|
-  | bwa | cpu: 24 |  number of CPUs|
+| Key           | Value                                             | Explanation     |
+| ------------- |:-------------------------------------------------:|:---------------|
+| env           | config.sh                                         | This file is sourced by the shell and loads enviromental variables |
+| CPU           | number of CPUs to use                             |   2 |
+| nucmer        | /path/to/mummer/bin/nucmer                        |   Path to nucmer |
+| delta-filter  | /path/to/mummer/bin/delta-filter                  |   Path to delta-filter |
+| show-coords   | /path/to/mummer/bin/show-coords                   |   Path to show-coords |
+| samtools      | /path/to/samtools                                 |   Path to samtools |
+| hp            | /path/to/FALCON-Phase/bin/coords2hp.py            |  Path to coords2hp.py |
+| hpfilt        | /path/to/FALCON-Phase/bin/filt_hp.py              |  Path to filt_hp.py |
+| falcon_phase  | /path/to/FALCON-Phase/bin/falcon-phase            |  Path to falcon-phase | 
+| falcon_oi     | /path/to/FALCON-Phase/bin/primary_contig_index.pl |  Path to primary_contig_index.pl | 
+| bedtools      | /path/to/bedtools                                 |  Path to bedtools| 
+| bwa           | path: /path/to/bwa                                |  Path to bwa|
+| bwa           | cpu: 24                                           |  number of CPUs|
 
 If you already have binaries for the dependencies via cluster modules you will want to use the `config.sh` to load them. Below is an example `config.sh`. The paths to the binaries in the config.json will need to match where the cluster loads the modules (e.g. `which samtools` returns the path to the binary).
 
 Example of config.sh
 ```
-source /mnt/software/Modules/current/init/bash
 module load snakemake
 module load bwa/0.7.17
 module load bedtools/2.25.0
@@ -72,18 +71,17 @@ module load mummer/4.0.0
 
 ### Sample setup
 
-| Key          | Value | Explination  |
-| ------------- |:-------------:|:-----|
-| name           | hbird    | The name of the sample, most output files will have this prefix |
-| min_aln_len           | 3000    | The minimal alignment length to consider during haplotig placement |
-| h_to_p           | /path/to/FALCON-Phase-example/test_dataset/name_mapping_tiny.txt    | A file that maps the haplotig names to primary contig names |
-| p_ctgs           | /path/to/FALCON-Phase-example/test_dataset/hbird_jan2018_p_ctg_CLEAN_tiny.fasta  | Path to primary contigs |
-| p_faidx           | /path/to/FALCON-Phase-example/test_dataset/hbird_jan2018_p_ctg_CLEAN_tiny.fasta.fai  | Path to primary contig index |
-| h_ctgs           | /path/to/FALCON-Phase-example/test_dataset/hbird_jan2018_h_ctg_CLEAN_tiny.fasta | Path to haplotigs |
-| r1           | /path/to/FALCON-Phase-example/test_dataset/hummingbird_S3HiC_AD016_R1_tiny.fastq | Hi-C read-pair 1 |
-| r2           | /path/to/FALCON-Phase-example/test_dataset/hummingbird_S3HiC_AD016_R2_tiny.fastq | Hi-C read-pair 2 |
-| enzyme           | GATC | The restriction enzyme used for Hi-C library prep |
-| iter           | 10000000 | The number of iterations for the phasing algorithm, more is generally better |
+| Key          | Value                                 | Explanation                                      |
+| ------------ |:-------------------------------------:|:------------------------------------------------ |
+| name         | test                                  | The name of the sample, most output files will have this prefix |
+| min_aln_len  | 3000                                  | The minimal alignment length to consider during haplotig placement |
+| h_to_p       | /path/to/name_mapping_tiny.txt        | A file that maps the haplotig names to primary contig names |
+| p_ctgs       | /path/to/FALCON-Phase/test_dataset/cns_p_ctg.fasta | Path to primary contigs |
+| h_ctgs       | /path/to/FALCON-Phase/test_dataset/cns_h_ctg.fasta | Path to haplotigs |
+| r1           | /path/to/FALCON-Phase/test_dataset/S3HiC_R1.fastq  | Hi-C read-pair 1 |
+| r2           | /path/to/FALCON-Phase/test_dataset/S3HiC_R2.fastq  | Hi-C read-pair 2 |
+| enzyme       | GATC                                   | The restriction enzyme used for Hi-C library prep |
+| iter         | 10000                                  | The number of iterations for phasing algorithm, 10e7 is recommended |
 
 
 4. Phew! Take a deep breath, you're almost done.
