@@ -133,7 +133,7 @@ snakemake -j 50 --cluster-config cluster.config.sge.json --cluster "qsub -S {clu
 ```
 
 
-## Directory Structure and Pipeline Output :rage2:
+## Directory Structure and Pipeline Output :cow2:
 
 The FALCON-Phase pipeline has 
 
