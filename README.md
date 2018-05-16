@@ -139,7 +139,7 @@ The FALCON-Phase pipeline has a number of steps that are implemented by rules in
 
 ![FP Workflow](https://github.com/phasegenomics/FALCON-Phase/blob/master/logo/FALCONphaseFig1.png)
 
-1. haplotig placement
+### Haplotig Placement
 
 The haplotig placement file specifies where each haplotig aligns to its primary contig and is used to define phase blocks in the FALCON-Unzip assembly. Making the haplotig placement file involved several steps. First, `nucmer` is used to align all haplotigs to their primary contig. This step produces delta files for each primary contig.
 
