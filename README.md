@@ -2,9 +2,10 @@
 
 FALCON-Phase integrates PacBio long-read assemblies with Phase Genomics Hi-C data to create phased, diploid, chromosome-scale scaffolds.
 
+![FP logo](https://github.com/phasegenomics/FALCON-Phase/blob/master/logo/FP.png)
+
 Read about the method and its performance in our [preprint](brokenlink).
 
-![FP logo](https://github.com/phasegenomics/FALCON-Phase/blob/master/logo/FP.png)
 
 ## Dependencies :rage2:
 
