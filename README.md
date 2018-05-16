@@ -108,7 +108,7 @@ module load mummer/4.0.0
 
 Snakemake will start printing information to your screen about the process. This example dataset only takes a few minutes to run, but a "real" job will take longer and should be run in the background. Once everthing is done you should see the final file `test.diploid_phased.fasta` in the pipeline folder.
 
-Snakemake can be run on a cluster and submit jobs the scheduler. We have included an SGE cluster config file as an example. However, you'll need to setup the cluster config to match your cluster's settings. Below is the command to run snakemake on PacBio's SGE cluster.
+Snakemake can be run on a cluster and submit jobs the scheduler. We have included an SGE cluster config file as an example. However, you'll need to setup the cluster config to match your cluster's settings. Below is the command to run snakemake on PacBio's SGE cluster. This command runs 50 concurrent jobs. Adjust settings the `cluster.config.sge.json` file.
 
 ```
 snakemake -j 50 --cluster-config cluster.config.sge.json --cluster "qsub -S {cluster.S} -N {cluster.N} {cluster.P} -q {cluster.Q} {cluster.CPU} -e {cluster.E} -o {cluster.O} -V" -s snakefile --verbose -p --latency-wait 60
