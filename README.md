@@ -19,7 +19,7 @@ The version numbers of the dependances are listed below, but new/older versions 
 In addition, the **NumPy** library is required.
 
 
-## Install process :floppy_disk:
+## Installation :floppy_disk:
 
 Cloning the repository downloads the pipeline, the source code, and HTSLIB. 
 
@@ -50,11 +50,7 @@ The name_mapping.txt file maps each haplotig to a primary contig and is required
 000001F	000001F_003
 ```
 
-3. Go into the pipeline folder.
-
-```cd pipeline```
-
-4. Edit the `config.json`, filling out the paths to the dependencies, and sample information. The tables below explains the fields in the config file. 
+3. Edit the `config.json` in the pipeline folder, filling out the paths to the dependencies, and sample information. The tables below explains the fields in the config file. 
 
 ### Enviromental setup :vhs:
 
@@ -102,9 +98,9 @@ module load mummer/4.0.0
 | iter         | 10000                                  | The number of iterations for phasing algorithm, 10e7 is recommended |
 
 
-5. Phew! Take a deep breath, you're almost done.
+4. Phew! Take a deep breath, you're almost done.
 
-6. Run the `snakemake` pipeline. To do so, on my computer, i need to be in a python 36 virtual environment. This differs between machines, so you'll need to get that sorted out. Here's the command to run the FALCON-Phase snakemake pipeline:
+5. Run the `snakemake` pipeline. To do so, on my computer, i need to be in a python 36 virtual environment. This differs between machines, so you'll need to get that sorted out. Here's the command to run the FALCON-Phase snakemake pipeline:
 
 ```
 (py36) Zevs-MBP-2:pipeline zev$ snakemake -p
