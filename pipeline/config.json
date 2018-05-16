@@ -20,7 +20,6 @@
                   "min_aln_len" : "5000",
                   "h_to_p"      : "name_mapping.txt",
                   "p_ctgs"      : "/path/to/FALCON-Phase/test_data/cns_p_ctg.fasta",
-                  "p_faidx"     : "/path/to/FALCON-Phase/test_data/cns_p_ctg.fasta.fai",
                   "h_ctgs"      : "/path/to/FALCON-Phase/test_data/cns_h_ctg.fasta",
                   "r1"          : "/path/to/FALCON-Phase/test_data/S3HiC_R1.fastq",
                   "r2"          : "/path/to/FALCON-Phase/test_data/S3HiC_R2.fastq",
