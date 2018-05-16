@@ -7,18 +7,11 @@ shell.prefix("source {0}; set -eo pipefail ; ".format(config['env']))
 
 SAMPLES = config['sample']['name']
 
-IN_PRIMARY = collections.defaultdict(lambda: [])
 PRIMARY    = collections.defaultdict(lambda: [])
-
-
-with open(config['sample']["p_faidx"]) as tsv:
-     for line in csv.reader(tsv, delimiter="\t"):
-     	 IN_PRIMARY["{0}".format(line[0])] = 1
 
 with open(config['sample']["h_to_p"]) as tsv:
     for line in csv.reader(tsv, delimiter="\t"):
-    	if(line[0] in IN_PRIMARY.keys()):
-    		   PRIMARY[line[0]].append("{0}".format(line[1]))
+    	PRIMARY[line[0]].append("{0}".format(line[1]))
 
 
 for i in PRIMARY.keys():
