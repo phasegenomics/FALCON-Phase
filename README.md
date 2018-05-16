@@ -139,18 +139,11 @@ The FALCON-Phase pipeline has a number of steps that are implemented by rules in
 
 ![FP Workflow](https://github.com/phasegenomics/FALCON-Phase/blob/master/logo/FALCONphaseFig1.pdf)
 
+1. haplotig placement
 
 .. code-block:: bash
 
-        3-unzip/
-        ├── 0-phasing/                  # Contig phasing jobs
-        ├── 1-hasm/                     # Contig Graph assembly information
-        ├── read_maps/                  # rawread_to_contigs; read_to_contig_map
-        ├── reads/                      # raw read fastas for each contig
-        ├── all_p_ctg.fa                # partially phased primary contigs
-        ├── all_h_ctg.fa                # phased haplotigs
-        ├── all_p_ctg_edges             # primary contig edge list
-        ├── all_h_ctg_edges             # haplotig edge list
-        ├── all_h_ctg_ids               # haplotig id index
-        └── all_phased_reads            # table of all phased raw reads
+        delta_files/
+        ├── test.000000F.delta/                  # delta file of haplotigs aligned to primary contig 000000F
+        ├── test.000001F.delta/                  # delta file of haplotigs aligned to primary contig 000001F
 
