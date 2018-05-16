@@ -1,5 +1,7 @@
 # FALCON-Phase  ![Build Status](https://travis-ci.com/phasegenomics/FALCON-Phase.svg?token=qJUQGbDRUX3LsN3id6ky&branch=master) [![Analytics](https://ga-beacon.appspot.com/UA-90096627-2/FALCON-Phase/blob/master/README.md)](https://github.com/igrigorik/ga-beacon)
 
+Read about the method and its performance in our [preprint](brokenlink).
+
 FALCON-Phase integrates PacBio long-read assemblies with Phase Genomics Hi-C data to create phased, diploid, chromosome-scale scaffolds.
 
 ![FP logo](https://github.com/phasegenomics/FALCON-Phase/blob/master/logo/FP.png)
