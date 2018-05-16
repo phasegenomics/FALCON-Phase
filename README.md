@@ -40,7 +40,15 @@ Usage:
 
 ```scrub_names.pl p-contigs.fa h-contigs.fa > name_mapping.txt```
 
-The name_mapping.txt file maps each haplotig to the primary contig
+The name_mapping.txt file maps each haplotig to a primary contig and is required to for the mummer steps and to build the snakemake DAG. It looks like this:
+
+```000000F	000000F_001
+000000F	000000F_002
+000000F	000000F_003
+000001F	000001F_001
+000001F	000001F_002
+000001F	000001F_003
+```
 
 3. Go into the pipeline folder.
 
