@@ -1,0 +1,206 @@
+import csv
+import collections
+
+configfile: "config.json"
+
+shell.prefix("source {0}; set -eo pipefail ; ".format(config['env']))
+
+SAMPLES = config['sample']['name']
+
+IN_PRIMARY = collections.defaultdict(lambda: [])
+PRIMARY    = collections.defaultdict(lambda: [])
+
+
+with open(config['sample']["p_faidx"]) as tsv:
+     for line in csv.reader(tsv, delimiter="\t"):
+     	 IN_PRIMARY["{0}".format(line[0])] = 1
+
+with open(config['sample']["h_to_p"]) as tsv:
+    for line in csv.reader(tsv, delimiter="\t"):
+    	if(line[0] in IN_PRIMARY.keys()):
+    		   PRIMARY[line[0]].append("{0}".format(line[1]))
+
+
+for i in PRIMARY.keys():
+    print(PRIMARY[i])
+
+def _get_PCTG(wildcards):
+	return config['sample']['p_ctgs']
+
+def _get_HCTG(wildcards):
+	return config['sample']['h_ctgs']
+
+def _get_haplotigs_by_primary(wildcards):
+	return PRIMARY[wildcards.primary]
+
+def _get_ENZYME(wildcards):
+    return config['sample']['enzyme']
+
+def _get_PER(wildcards):
+    return config['sample']['iter']
+
+
+rule dummy :
+     input : expand("{sample}.diploid_phased.fasta", sample=SAMPLES),
+
+rule emit_haplotigs :
+     message    : "[info] emitting phased haplotigs"
+     input      : EH=config['emit'], PH="{sample}.phased.txt", BC="mince/{sample}.BC.bed", FA="{sample}.p_h_ctg.fa", BED=config['bedtools']
+     output     : "{sample}.diploid_phased.fasta"
+     shell      : """
+            {input.EH} {input.PH} {input.BC} {input.FA} {input.BED} > {output}
+
+            rm tmp_phase1.txt
+            rm tmp_phase0.txt
+     """
+
+rule prep_emit  :
+     message    : "[info] preparing files for haplotig emission"
+     input      : PCTG=_get_PCTG, HCTG=_get_HCTG, B="mince/{sample}.B_haplotigs.bed", C="mince/{sample}.collapsed_haplotypes.bed", ST=config['samtools']
+     output     : "{sample}.p_h_ctg.fa", BC="mince/{sample}.BC.bed"
+     shell      : """
+                    cat {input.PCTG} {input.HCTG} > {output[0]}
+                    {input.ST} faidx {output[0]}
+                    cat {input.B} {input.C} | sort -k1,1 -k2,2n > {output.BC}
+                """
+
+rule phase      :
+    message     : "[info] running falcon-phase binary"
+    input       : IDX="{sample}.ov_index.txt", FA="mince/{sample}.minced.fasta", BINMAT="{sample}.binmat",  FP=config['falcon_phase']
+    output      : "{sample}.phased.txt"
+    params      : PER=_get_PER, ENZ=_get_ENZYME
+    shell       : """
+
+        {input.FP} phase -f {input.FA} -b {input.BINMAT} -m {params.ENZ} -i {input.IDX} -p tmp -s {params.PER} > {output}
+
+    """
+
+rule index_pair :
+     message    : "[info] building haplotig overlap index for falcon phase"
+     input      : ABC="mince/{sample}.minced.fasta", ABP="haplotig_placement_file/{sample}.AB_pairs.txt", FOI=config['falcon_oi'], ST=config['samtools']
+     output     : "{sample}.ov_index.txt"
+     shell      : """
+     		{input.ST} faidx {input.ABC}
+		{input.FOI} {input.ABP} {input.ABC}.fai > {output}
+
+     """
+
+rule binmat  :
+     message : "[info] building binary matrix of HiC contacts"
+     input   : FF=config['falcon_phase'], BAM="{sample}.filtered.bam"
+     output  : "{sample}.binmat"
+     shell   : """
+	{input.FF} bam2 binmat {input.BAM} {output}
+     """
+
+rule bam_filt   :
+     message    : "[info] filtering BAM"
+     input      : FF=config['falcon_phase'], BAM="{sample}.unfiltered.bam"
+     output     : "{sample}.filtered.bam"
+     shell      : """
+	{input.FF} bamfilt -f 20 -m 10 -i {input.BAM} -o {output}
+     """
+
+rule aln      :
+     message  : "[info] BWA alignments of HiC read pairs"
+     input    : BWA=config['bwa']['path'], REF="mince/{sample}.minced.fasta", ST=config['samtools'], R1=config['sample']['r1'], R2=config['sample']['r2']
+     output   : "{sample}.unfiltered.bam"
+     params   : CPU=config['bwa']['cpu']
+     shell    : """
+
+	    {input.BWA} index {input.REF}
+	    {input.BWA} mem -5 -t {params.CPU} {input.REF} {input.R1} {input.R2} | {input.ST} view -S -h -b -F 2316 > {output}
+
+     """
+
+
+rule bake_mince   :
+     message     : "[info] making minced fasta file"
+     input        : A="mince/{sample}.A_haplotigs.fasta", B="mince/{sample}.B_haplotigs.fasta", C="mince/{sample}.collapsed_haplotypes.fasta"
+     output       : "mince/{sample}.minced.fasta"
+     shell        : """
+                    cat {input.A} {input.B} {input.C} > {output}
+                  """
+
+rule mince_fasta    :
+     message        : "[info] making individual minced fasta files"
+     input          : AB="mince/{sample}.A_haplotigs.bed", BB="mince/{sample}.B_haplotigs.bed", CB="mince/{sample}.collapsed_haplotypes.bed", BT=config['bedtools'], PCTG=_get_PCTG, HCTG=_get_HCTG
+     output         : AF="mince/{sample}.A_haplotigs.fasta", BF="mince/{sample}.B_haplotigs.fasta", CF="mince/{sample}.collapsed_haplotypes.fasta"
+     shell          : """
+
+            # GENERATE FASTA FILES
+            {input.BT} getfasta -fi {input.PCTG} -bed {input.BB} > {output.BF}
+            {input.BT} getfasta -fi {input.PCTG} -bed {input.CB} > {output.CF}
+            {input.BT} getfasta -fi {input.HCTG} -bed {input.AB} > {output.AF}
+
+     """
+
+rule mince_bed   :
+     message     : "[info] making minced BED files"
+     input       : DAT="haplotig_placement_file/{sample}.filt_hp.txt", BT=config['bedtools'], PCTG=_get_PCTG, 
+     output      : ABP="haplotig_placement_file/{sample}.AB_pairs.txt", A="mince/{sample}.A_haplotigs.bed", B="mince/{sample}.B_haplotigs.bed", C="mince/{sample}.collapsed_haplotypes.bed"
+     shell       : """
+
+            awk '{{print $1 ":" 0 "-" $4 "\t" $6 ":" $8 "-" $9}}' {input.DAT} > {output.ABP}
+
+            cat {output.ABP} | cut -f1 | perl -lane '@Z = split /-|:/, $_; print join "\t", @Z ' | sort -k1,1 -k2,2n > {output.A}
+            cat {output.ABP} | cut -f2 | perl -lane '@Z = split /-|:/, $_; print join "\t", @Z ' | sort -k1,1 -k2,2n > {output.B}
+
+            {input.BT} merge -i {output.B} > mince/B_haplotigs_merged.bed
+
+            cut -f1,2 {input.PCTG}.fai > tmp.genome
+
+            # make BED file for collapsed region, exclude haplotigs
+            {input.BT} complement -i mince/B_haplotigs_merged.bed -g tmp.genome > {output.C}
+
+            rm tmp.genome
+
+     """
+
+rule placement_filt :
+     message        : "[info] filtering placement file"
+     input          : PL="haplotig_placement_file/{sample}.hp.txt", FILT=config['hpfilt']
+     output         : "haplotig_placement_file/{sample}.filt_hp.txt"
+     shell          : """
+     		    {input.FILT} {input.PL} > {output}
+     		    """
+
+rule placement   :
+     message     : "[info] making haplotig placement file"
+     input       : CO=expand("coords_files/{{sample}}.{primary}.coords", primary=PRIMARY.keys()), HP=config['hp'], ST=config['samtools']
+     output      : "coords_files/{sample}.coords.out", "haplotig_placement_file/{sample}.hp.txt"
+     shell       : """
+     	       cat {input.CO} | sort -k11,11 -k1,1n  > {output[0]}
+     	       {input.HP} {output[0]} | sort -k6,6 -k8,8n > {output[1]}
+	       """
+
+rule coords  :
+     message : "[info] running show-coords"
+     input   : DF="filtered_delta_files/{sample}.{primary}.delta.filt", SC=config['show-coords']
+     output  : "coords_files/{sample}.{primary}.coords"
+     params  : MAL=config['sample']['min_aln_len']
+     shell   : """
+     	     {input.SC} -qTlHL {params.MAL} {input.DF} > {output}
+     """
+
+rule filter  :
+     message : "[info] running delta-filter"
+     input   : DL="delta_files/{sample}.{primary}.delta", DF=config['delta-filter']
+     output  : "filtered_delta_files/{sample}.{primary}.delta.filt"
+     shell   : """
+     	    {input.DF} -g {input.DL} > {output}
+     """
+
+rule nucmer  :
+     message : "[info] aligning haplotigs to primary contigs with nucmer"
+     input   : NUC=config['nucmer'], ST=config['samtools'], PCTG=_get_PCTG, HCTG=_get_HCTG
+     output  : "delta_files/{sample}.{primary}.delta", temp("{sample}.{primary}.p.fa"), temp("{sample}.{primary}.h.fa")
+     params  : CPU=config['CPU'], HS=_get_haplotigs_by_primary
+     shell   : """
+
+
+	    {input.ST} faidx {input.PCTG} '{wildcards.primary}' > '{output[1]}'
+	    {input.ST} faidx {input.HCTG} {params.HS}           > '{output[2]}'
+
+     	    {input.NUC} --maxmatch -l 100 -c 500 --delta='{output[0]}' -t {params.CPU} '{output[1]}' '{output[2]}'
+     """

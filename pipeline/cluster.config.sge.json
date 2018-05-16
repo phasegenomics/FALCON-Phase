@@ -1,0 +1,16 @@
+{
+    "__default__" :
+    {
+	"S"   : "/bin/bash",
+        "N"   : "falcon-phase",
+	"P"   : "-cwd",
+	"Q"   : "default",
+	"CPU" : "-pe smp 2",
+	"E"   : "qsub_log/",
+ 	"O"   : "qsub_log/"
+     },    
+    "aln"  :
+    {
+        "CPU"  : "-pe smp 24"
+    }
+}
