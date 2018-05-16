@@ -37,7 +37,7 @@ We have provided a small pseudo test dataset ([sample info](https://www.ncbi.nlm
 
 ```cd pipeline```
 
-3. Edit the config.json, filling out the paths to the dependencies, and sample information. The tables below explains the fields in the config file. 
+3. Edit the `config.json`, filling out the paths to the dependencies, and sample information. The tables below explains the fields in the config file. 
 
 ### Enviromental setup :vhs:
 
