@@ -4,7 +4,7 @@ FALCON-Phase integrates PacBio long-read assemblies with Phase Genomics Hi-C dat
 
 ![FP logo](https://github.com/phasegenomics/FALCON-Phase/blob/master/logo/FP.png)
 
-## Dependencies
+## Dependencies :rage2:
 
 We did our best to minimize dependances, but there are a number of standard bioinformatics tools required by the pipeline.
 The version numbers of the dependances are listed below, but new/older versions should work, but are untested. The required binaries are specified in the config.json file.  
