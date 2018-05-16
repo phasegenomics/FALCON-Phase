@@ -103,15 +103,26 @@ module load mummer/4.0.0
 
 4. Phew! Take a deep breath, you're almost done.
 
-5. Run the `snakemake` pipeline. To do so, on my computer, I need to be in a python 3.6 virtual environment with numPy libraries loaded. This differs between machines, so you'll need to get that sorted out. Here's the command to run the FALCON-Phase snakemake pipeline:
+5a. Run the `snakemake` pipeline locally. To do so, on my computer, I need to be in a python 3.6 virtual environment with numPy libraries loaded. This differs between machines, so you'll need to get that sorted out. Here's the command to run the FALCON-Phase snakemake pipeline:
 
 ```
-(py36) $ snakemake -s snakefile --verbose -p
+(py36)$ snakemake -s snakefile --verbose -p
 ```
 
 Snakemake will start printing information to your screen about the process. This example dataset only takes a few minutes to run, but a "real" job will take longer and should be run in the background. Once everthing is done you should see the final file `test.diploid_phased.fasta` in the pipeline folder.
 
-Snakemake can be run on a cluster and submit jobs the scheduler. We have included an SGE cluster config file as an example. However, you'll need to setup the cluster config to match your cluster's settings. Below is the command to run snakemake on PacBio's SGE cluster. This command runs 50 concurrent jobs. Adjust settings the `cluster.config.sge.json` file.
+5b. Run the `snakemake` on a cluster. Snakemake can be run on a cluster and submit jobs the scheduler. We have included an SGE cluster config file as an example. The table below explains the fields in the `cluster.config.sge.json`. 
+
+| Key          | Value                                 | Explanation                                      |
+| ------------ |:-------------------------------------:|:------------------------------------------------ |
+| S        | /bin/bash     | The name of the sample, most output files will have this prefix |
+| N  | 3000                                  | The minimal alignment length to consider during haplotig placement |
+| P       | /path/to/name_mapping_tiny.txt        | A file that maps the haplotig names to primary contig names |
+|
+
+Below is the command to run snakemake on PacBio's SGE cluster. This command runs 50 concurrent jobs. You can adjust settings in the `cluster.config.sge.json` file.
+
+NOTE: stderr and stdout 
 
 ```
 snakemake -j 50 --cluster-config cluster.config.sge.json --cluster "qsub -S {cluster.S} -N {cluster.N} {cluster.P} -q {cluster.Q} {cluster.CPU} -e {cluster.E} -o {cluster.O} -V" -s snakefile --verbose -p --latency-wait 60
@@ -119,6 +130,8 @@ snakemake -j 50 --cluster-config cluster.config.sge.json --cluster "qsub -S {clu
 
 
 ## Directory Structure and Pipeline Output :rage2:
+
+The FALCON-Phase pipeline has 
 
 .. code-block:: bash
 
