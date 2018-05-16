@@ -33,11 +33,18 @@ We have provided a small pseudo test dataset ([sample info](https://www.ncbi.nlm
 
 
 1. Install the pipeline (as shown in the Install Process)
-2. Go into the pipeline folder.
+
+2. Clean the headers of your FALCON-Unzip assembly files and generate the name_mapping.txt file. We have provides a perl script to do this for you: `scrub_names.pl` in the bin directory.
+
+Usage:
+
+```scrub_names.pl p-contigs.fa h-contigs.fa > name_mapping.txt```
+
+3. Go into the pipeline folder.
 
 ```cd pipeline```
 
-3. Edit the `config.json`, filling out the paths to the dependencies, and sample information. The tables below explains the fields in the config file. 
+4. Edit the `config.json`, filling out the paths to the dependencies, and sample information. The tables below explains the fields in the config file. 
 
 ### Enviromental setup :vhs:
 
@@ -59,7 +66,7 @@ We have provided a small pseudo test dataset ([sample info](https://www.ncbi.nlm
 
 If you already have binaries for the dependencies via cluster modules you will want to use the `config.sh` to load them. Below is an example `config.sh`. The paths to the binaries in the config.json will need to match where the cluster loads the modules (e.g. `which samtools` returns the path to the binary).
 
-Example of config.sh
+Example of `config.sh`
 ```
 module load snakemake
 module load bwa/0.7.17
@@ -85,9 +92,9 @@ module load mummer/4.0.0
 | iter         | 10000                                  | The number of iterations for phasing algorithm, 10e7 is recommended |
 
 
-4. Phew! Take a deep breath, you're almost done.
+5. Phew! Take a deep breath, you're almost done.
 
-5. Run the snakemake pipeline. To do so, on my computer, i need to be in a python 36 virtual environment. This differs between machines, so you'll need to get that sorted out. Here's the command to run the FALCON-Phase snakemake pipeline:
+6. Run the `snakemake` pipeline. To do so, on my computer, i need to be in a python 36 virtual environment. This differs between machines, so you'll need to get that sorted out. Here's the command to run the FALCON-Phase snakemake pipeline:
 
 ```
 (py36) Zevs-MBP-2:pipeline zev$ snakemake -p
