@@ -159,7 +159,30 @@ Alignment coordinate files are made with `show-coords`:
         ├── test.000000F.coords/        # coords file for primary contig 000000F
         ├── test.000001F.coords/        # coords file for primary contig 000001F
 
-The haplotig placement file is made by calling two scripts, `coords2hp.py` and `filt_hp.py`. In addition, the AB
+The haplotig placement file is made by calling two scripts, `coords2hp.py` and `filt_hp.py`. The file specifying the phase block pairing is contained in the haplotig_placement directory and is produces in the mincing stage.
+
+        haplotig_placement_file/
+        ├── test.hbird.hp.txt/             # unfiltered haplotig placement file
+        ├── test.hbird.filt_hp.txt/        # final haplotig placement file
+        ├── test.AB_pairs.txt/             # pairing of A-B haplotigs (phase blocks)
+
+### Mincing
+
+Once the haplotig placement file and A-B pairings are done, the primary contigs are minces at phase block boundaries:
+
+        mince/
+        ├── test.A_haplotigs.bed/        # BED file for A minced haplotigs (original FALCON-Unzip haplotigs)
+        ├── test.B_haplotigs.bed/        # BED file for B minced haplotigs (corresponding phase blocks on  FALCON-Unzip primary contigs)
+        ├── test.collapsed_haplotypes.bed/  #  BED file for collapsed haplotigs (non-Unzipped regions of primary contigs)
+        ├── test.A_haplotigs.fasta/      # FASTA file for A minced haplotigs 
+        ├── test.B_haplotigs.fasta/      # FASTA file for B minced haplotigs
+        ├── test.collapsed_haplotypes.fasta/  #  FASTA file for collapsed haplotigs
+        ├── test.minced.fasta/            # Concatenated FASTA (A, B, C)
+        ├── test.BC.bed/                  # sorted BED of B and collapsed haplotigs
+        ├── B_haplotigs_merged.bed/       # merging of overlapping B haplotigs (used to define collapsed regions)
+
+
+
 
 
 
