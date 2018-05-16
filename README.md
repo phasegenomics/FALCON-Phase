@@ -13,7 +13,7 @@ The version numbers of the dependances are listed below, but new/older versions 
 + **BWA       (v0.7.17)**         -  Mapping the Hi-C to the minced contigs
 + **Mummer 4  (4.0.0)**           -  Mapping the haplotigs (h contigs)
 + **BEDTools  (2.27.1)**          -  Creating AB pair index 
-+ **HSTLIB    (1.5 or greater)**  -  Internal dependency (bundled with FALCON-phase)
++ **HSTLIB    (1.5 or greater)**  -  Internal dependency (bundled with FALCON-Phase)
 + **SAMTOOLS  (1.5 or greater)**  -  Indexing fasta files
 
 In addition, the **NumPy** library is required.
