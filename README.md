@@ -182,7 +182,24 @@ Once the haplotig placement file and A-B pairings are done, the primary contigs 
         ├── B_haplotigs_merged.bed/       # merging of overlapping B haplotigs (used to define collapsed regions)
 
 
+### Mapping of Hi-C Reads
 
+hbird.unfiltered.bam
+hbird.filtered.bam
+hbird.ov_index.txt
+hbird.binmat
+
+### Phasing
+
+hbird.phased.txt
+
+### Emission of Phase Haplotigs
+
+hbird.p_h_ctg.fa
+hbird.p_h_ctg.fa.fai
+phase0.bed
+phase1.bed
+hbird.diploid_phased.fasta
 
 
 
