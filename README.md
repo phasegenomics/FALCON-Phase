@@ -1,4 +1,6 @@
 # FALCON-Phase  ![Build Status](https://travis-ci.com/phasegenomics/FALCON-Phase.svg?token=qJUQGbDRUX3LsN3id6ky&branch=master)
+[![Analytics](https://ga-beacon.appspot.com/UA-90096627-2/FALCON-Phase/readme)](https://github.com/igrigorik/ga-beacon)
+
 FALCON-Phase integrates PacBio long-read assemblies with Phase Genomics Hi-C data to create phased, diploid, chromosome-scale scaffolds.
 
 ![FP logo](https://github.com/phasegenomics/FALCON-Phase/blob/master/logo/FP.png)
@@ -99,5 +101,3 @@ Snakemake can be run on a cluster and submit jobs the scheduler. We have include
 ```
 snakemake -j 50 --cluster-config pb_cluster.config.sge.json --cluster "qsub -S {cluster.S} -N {cluster.N} {cluster.P} -q {cluster.Q} {cluster.CPU} -e {cluster.E} -o {cluster.O} -V" -s snakefile --verbose -p --latency-wait 60
 ```
-
-[![Analytics](https://ga-beacon.appspot.com/UA-90096627-2/FALCON-Phase/readme)](https://github.com/igrigorik/ga-beacon)
