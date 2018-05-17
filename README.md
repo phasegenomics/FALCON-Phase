@@ -224,7 +224,8 @@ The final output of FALCON-Phase is two phased, full-length haplotigs for each p
 
 The final output FASTA headers look like:
 
-```>000000F_0
+```
+>000000F_0
 >000001F_0
 >000000F_1
 >000001F_1
