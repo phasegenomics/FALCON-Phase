@@ -13,6 +13,8 @@ FALCON-Phase was developed to solve the problem of haplotype switching in diploi
 
 To run the pipeline you need a FALCON-Unzip assembly and Hi-C data. See [PacBio](https://www.pacb.com/calculator-whole-genome-sequencing/) recommendations for assembly coverage. For Hi-C we suggest 100 million read pairs per 1 Gb of genome length, with adjustments for genome complexity and library quality.
 
+FALCON-Phase can be used to phase haplotype blocks within a contig and contigs within scaffolds. See our [preprint](broken link) for details.
+
 
 ## Dependencies :rage2:
 
