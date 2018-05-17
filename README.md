@@ -149,9 +149,10 @@ The FALCON-Phase pipeline has a number of steps that are implemented by rules in
 
 The haplotig placement file specifies where each haplotig aligns to its primary contig and is used to define phase blocks in the FALCON-Unzip assembly. Making the haplotig placement file involved several steps. First, `nucmer` is used to align all FALCON-Unzip haplotigs to their primary contig. This step produces delta files for each primary contig.
 
-        delta_files/
-        ├── test.000000F.delta/             # delta file of haplotigs aligned to primary contig 000000F
-        ├── test.000001F.delta/             # delta file of haplotigs aligned to primary contig 000001F
+        job_dir/
+        ├── delta_files/
+                ├── test.000000F.delta/             # delta file of haplotigs aligned to primary contig 000000F
+                ├── test.000001F.delta/             # delta file of haplotigs aligned to primary contig 000001F
 
 Delta files are filtered in the next step using `delta-filter`:
 
