@@ -1,10 +1,17 @@
 # FALCON-Phase  ![Build Status](https://travis-ci.com/phasegenomics/FALCON-Phase.svg?token=qJUQGbDRUX3LsN3id6ky&branch=master) [![Analytics](https://ga-beacon.appspot.com/UA-90096627-2/FALCON-Phase/blob/master/README.md)](https://github.com/igrigorik/ga-beacon)
 
-FALCON-Phase integrates PacBio long-read assemblies with Phase Genomics Hi-C data to create phased, diploid, chromosome-scale scaffolds.
+FALCON-Phase integrates [PacBio](https://www.pacb.com/) long-read assemblies with [Phase Genomics](https://phasegenomics.com/) Hi-C data to create phased, diploid, chromosome-scale scaffolds.
 
 ![FP logo](https://github.com/phasegenomics/FALCON-Phase/blob/master/logo/FP.png)
 
 Read about the method and its performance in our [preprint](brokenlink).
+
+
+## Recommended Usage Case :monkey:
+
+FALCON-Phase was developed to solve the problem of haplotype switching in diploid genome assemblies. It has been tested on mammalian assemblies and can be applied to other outbred diploid organisms with less than 5% divergence between maternal and paternal haplotypes. When run on organisms with higher heterozygsity determining homology between haplotypes is ineffective as currently implemented.
+
+To run a pipeline you need a FALCON-Unzip assembly and Hi-C data. We recommend 200-300 million Hi-C read pairs, fewer for high heterozygosity samples, more for low heterozygosity samples.
 
 
 ## Dependencies :rage2:
@@ -21,12 +28,6 @@ The version numbers of the dependances are listed below, but new/older versions 
 
 In addition, the **NumPy** library is required.
 
-
-## Recommended Usage Case :monkey:
-
-FALCON-Phase was developed to solve the problem of haplotype switching in diploid genome assemblies. It has been tested on mammalian assemblies and can be applied to other outbred diploid organisms with less than 5% divergence between maternal and paternal haplotypes. When run on organisms with higher heterozygsity determining homology between haplotypes is ineffective as currently implemented.
-
-To run a pipeline you need a FALCON-Unzip assembly and Hi-C data. We recommend 200-300 million Hi-C read pairs, fewer for high heterozygosity samples, more for low heterozygosity samples.
 
 ## Installation :floppy_disk:
 
