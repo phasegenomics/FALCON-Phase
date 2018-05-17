@@ -181,7 +181,7 @@ The haplotig placement file is made by calling two scripts, `coords2hp.py` then 
 
 ### Mincing
 
-Once the haplotig placement file and A-B phae block pairings are done, the primary contigs are minced at phase block boundaries. Mincing allows Hi-C reads to be mapped to each pair of phase block so that the density of Hi-C connections can be used to assign blocks to the same phase.
+Once the haplotig placement file and A-B phase block pairings are done, the primary contigs are minced at phase block boundaries. Mincing allows Hi-C reads to be mapped to each pair of phase block so that the density of Hi-C connections can be used to assign blocks to the same phase.
 
         job_dir/
         ├── mince/
@@ -215,7 +215,7 @@ The binary matrix and index file are input to the FALCON-Phase algorithm to assi
         ├── test.phased.txt/        # phase assignment for each A-B phase block pair
         
 
-### Emission of Phase Haplotigs
+### Emission of Phased Haplotigs
 
 The final output of FALCON-Phase is two phased, full-length haplotigs for each primary contig. This is done by the `emit_haplotigs.pl` script.
 
