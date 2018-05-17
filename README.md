@@ -18,7 +18,7 @@ FALCON-Phase can be used to phase haplotype blocks within a contig and contigs w
 
 ## Dependencies :rage2:
 
-We did our best to minimize dependances, but there are a number of standard bioinformatics tools required by the pipeline.
+We did our best to minimize dependencies, but there are a number of standard bioinformatics tools required by the pipeline.
 The version numbers of the dependances are listed below, but new/older versions should work, but are untested. The required binaries are specified in the config.json file.  
 + **Python    (3.6)**             -  Running Snakemake
 + **Snakemake (3.6)**             -  Running the pipeline interactively or on a cluster 
