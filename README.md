@@ -147,7 +147,7 @@ The FALCON-Phase pipeline has a number of steps that are implemented by rules in
 
 ### Haplotig Placement
 
-The haplotig placement file specifies where each haplotig aligns to its primary contig and is used to define phase blocks in the FALCON-Unzip assembly. Making the haplotig placement file involved several steps. First, `nucmer` is used to align all haplotigs to their primary contig. This step produces delta files for each primary contig.
+The haplotig placement file specifies where each haplotig aligns to its primary contig and is used to define phase blocks in the FALCON-Unzip assembly. Making the haplotig placement file involved several steps. First, `nucmer` is used to align all FALCON-Unzip haplotigs to their primary contig. This step produces delta files for each primary contig.
 
         delta_files/
         ├── test.000000F.delta/             # delta file of haplotigs aligned to primary contig 000000F
@@ -165,7 +165,7 @@ Alignment coordinate files are made with `show-coords`:
         ├── test.000000F.coords/        # coords file for primary contig 000000F
         ├── test.000001F.coords/        # coords file for primary contig 000001F
 
-The haplotig placement file is made by calling two scripts, `coords2hp.py` and `filt_hp.py`. The file specifying the phase block pairing is contained in the haplotig_placement directory and is produces in the mincing stage.
+The haplotig placement file is made by calling two scripts, `coords2hp.py` then `filt_hp.py`. The file specifying the phase block pairing is contained in the haplotig_placement directory and is produced in the mincing stage (see below).
 
         haplotig_placement_file/
         ├── test.hbird.hp.txt/             # unfiltered haplotig placement file
@@ -174,16 +174,16 @@ The haplotig placement file is made by calling two scripts, `coords2hp.py` and `
 
 ### Mincing
 
-Once the haplotig placement file and A-B pairings are done, the primary contigs are minces at phase block boundaries:
+Once the haplotig placement file and A-B phae block pairings are done, the primary contigs are minced at phase block boundaries. Mincing allows Hi-C reads to be mapped to each pair of phase block so that the density of Hi-C connections can be used to assign blocks to the same phase.
 
         mince/
         ├── test.A_haplotigs.bed/        # BED file for A minced haplotigs (original FALCON-Unzip haplotigs)
-        ├── test.B_haplotigs.bed/        # BED file for B minced haplotigs (corresponding phase blocks on  FALCON-Unzip primary contigs)
+        ├── test.B_haplotigs.bed/        # BED file for B minced haplotigs (corresponding phase blocks on FALCON-Unzip primary contigs)
         ├── test.collapsed_haplotypes.bed/  #  BED file for collapsed haplotigs (non-Unzipped regions of primary contigs)
         ├── test.A_haplotigs.fasta/      # FASTA file for A minced haplotigs 
         ├── test.B_haplotigs.fasta/      # FASTA file for B minced haplotigs
-        ├── test.collapsed_haplotypes.fasta/  #  FASTA file for collapsed haplotigs
-        ├── test.minced.fasta/            # Concatenated FASTA (A, B, C)
+        ├── test.collapsed_haplotypes.fasta/  #  FASTA file for collapsed haplotypes
+        ├── test.minced.fasta/            # Concatenated FASTA (in this order: A_haplotigs, B_haplotigs, collapsed)
         ├── test.BC.bed/                  # sorted BED of B and collapsed haplotigs
         ├── B_haplotigs_merged.bed/       # merging of overlapping B haplotigs (used to define collapsed regions)
 
