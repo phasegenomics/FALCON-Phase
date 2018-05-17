@@ -190,7 +190,13 @@ Once the haplotig placement file and A-B phae block pairings are done, the prima
 
 ### Mapping of Hi-C Reads
 
-Hi-C reads are mapped to the 
+Hi-C reads are mapped to the minced FASTA file using `bwa mem`, streamed and processed in `samtools` and filtered with a FALCON-Phase utility:
+
+        job_dir/
+        ├── test.unfiltered.bam/      # Hi-C reads mapped to minced FASTA
+        ├── test.filtered.bam/        # filtered Hi-C reads mapped to minced FASTA
+        ├── test.binmat/             # binary matric of normalized Hi-C mappings
+            ├── test
 
 hbird.unfiltered.bam
 hbird.filtered.bam
