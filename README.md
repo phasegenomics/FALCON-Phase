@@ -11,7 +11,7 @@ Read about the method and its performance in our [preprint](brokenlink).
 
 FALCON-Phase was developed to solve the problem of haplotype switching in diploid genome assemblies. It has been tested on mammalian assemblies and can be applied to other outbred diploid organisms with less than 5% divergence between maternal and paternal haplotypes. When run on organisms with higher heterozygsity determining homology between haplotypes is ineffective as currently implemented.
 
-To run a pipeline you need a FALCON-Unzip assembly and Hi-C data. See [PacBio](https://www.pacb.com/calculator-whole-genome-sequencing/) and Phase Genomics recommendations for coverage.
+To run a pipeline you need a FALCON-Unzip assembly and Hi-C data. See [PacBio](https://www.pacb.com/calculator-whole-genome-sequencing/) recommendations for assembly coverage. For Hi-C we suggest 100 million read pairs per 1 Gb of genome length, with adjustments for genome complexity and library quality.
 
 
 ## Dependencies :rage2:
