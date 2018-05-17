@@ -102,8 +102,8 @@ module load mummer/4.0.0
 | name         | test                                  | The name of the sample, most output files will have this prefix |
 | min_aln_len  | 3000                                  | The minimal alignment length to consider during haplotig placement |
 | h_to_p       | /path/to/name_mapping_tiny.txt        | A file that maps the haplotig names to primary contig names |
-| p_ctgs       | /path/to/FALCON-Phase/test_dataset/cns_p_ctg.fasta | Path to primary contigs |
-| h_ctgs       | /path/to/FALCON-Phase/test_dataset/cns_h_ctg.fasta | Path to haplotigs |
+| p_ctgs       | /path/to/cns_p_ctg.clean.fasta | Path to CLEANED primary contigs |
+| h_ctgs       | /path/to/cns_h_ctg.clean.fasta | Path to CLEANED haplotigs |
 | r1           | /path/to/FALCON-Phase/test_dataset/S3HiC_R1.fastq  | Hi-C read-pair 1 |
 | r2           | /path/to/FALCON-Phase/test_dataset/S3HiC_R2.fastq  | Hi-C read-pair 2 |
 | enzyme       | GATC                                   | The restriction enzyme used for Hi-C library prep |
