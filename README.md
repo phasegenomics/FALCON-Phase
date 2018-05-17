@@ -32,7 +32,7 @@ Required data include a FALCON-Unzip assembly and Hi-C data.
 
 Cloning the repository downloads the pipeline, the source code, and HTSLIB. 
 
-`git clone --recursive https://github.com/skingan/FALCON-phase.git ; cd FALCON-Phase-example/src ; make`
+`git clone --recursive https://github.com/skingan/FALCON-phase.git ; cd FALCON-Phase/src ; make`
 
 After running this command you should see the executable binary `FALCON-Phase/bin/falcon-phase`.
 
