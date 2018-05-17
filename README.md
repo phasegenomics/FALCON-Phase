@@ -26,7 +26,7 @@ In addition, the **NumPy** library is required.
 
 FALCON-Phase was developed to solve the problem of haplotype switching in diploid genome assemblies. It has been tested on mammalian assemblies and can be applied to other outbred diploid organisms with less than 5% divergence between maternal and paternal haplotypes. When run on organisms with higher heterozygsity determining homology between haplotypes is ineffective as currently implemented.
 
-To run a pipeline you need a FALCON-Unzip assembly and Hi-C data.
+To run a pipeline you need a FALCON-Unzip assembly and Hi-C data. We recommend 200-300 million Hi-C read pairs, fewer for high heterozygosity samples, more for low heterozygosity samples.
 
 ## Installation :floppy_disk:
 
@@ -184,11 +184,13 @@ Once the haplotig placement file and A-B phae block pairings are done, the prima
         ├── test.B_haplotigs.fasta/      # FASTA file for B minced haplotigs
         ├── test.collapsed_haplotypes.fasta/  #  FASTA file for collapsed haplotypes
         ├── test.minced.fasta/            # Concatenated FASTA (in this order: A_haplotigs, B_haplotigs, collapsed)
-        ├── test.BC.bed/                  # sorted BED of B and collapsed haplotigs
+        ├── test.BC.bed/                  # sorted BED of B and collapsed
         ├── B_haplotigs_merged.bed/       # merging of overlapping B haplotigs (used to define collapsed regions)
 
 
 ### Mapping of Hi-C Reads
+
+Hi-C reads are mapped to the 
 
 hbird.unfiltered.bam
 hbird.filtered.bam
