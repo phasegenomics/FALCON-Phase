@@ -26,13 +26,13 @@ In addition, the **NumPy** library is required.
 
 FALCON-Phase was developed to solve the problem of haplotype switching in diploid genome assemblies. It has been tested on mammalian assemblies and can be applied to other outbred diploid organisms with less than 5% divergence between maternal and paternal haplotypes. When run on organisms with higher heterozygsity determining homology between haplotypes is ineffective as currently implemented.
 
-Required data include a FALCON-Unzip assembly and Hi-C data.
+To run a pipeline you need a FALCON-Unzip assembly and Hi-C data.
 
 ## Installation :floppy_disk:
 
 Cloning the repository downloads the pipeline, the source code, and HTSLIB. 
 
-`git clone --recursive https://github.com/skingan/FALCON-phase.git ; cd FALCON-Phase/src ; make`
+`git clone --recursive https://github.com/skingan/FALCON-phase.git ; cd FALCON-Phase-example/src ; make`
 
 After running this command you should see the executable binary `FALCON-Phase/bin/falcon-phase`.
 
