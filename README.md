@@ -9,9 +9,9 @@ Read about the method and its performance in our [preprint](brokenlink).
 
 ## Recommended Usage Case :monkey:
 
-FALCON-Phase was developed to solve the problem of haplotype switching in diploid genome assemblies. It has been tested on mammalian assemblies and can be applied to other outbred diploid organisms with less than 5% divergence between maternal and paternal haplotypes. When run on organisms with higher heterozygsity determining homology between haplotypes is ineffective as currently implemented. FALCON-Phase performs well on an F1 bull with [0.9% heterozygosity](https://www.biorxiv.org/content/early/2018/02/26/271486) and is curently untested on samples with lower variation.
+FALCON-Phase was developed to solve the problem of haplotype switching in diploid genome assemblies. It has been tested on mammalian assemblies and can be applied to other outbred diploid organisms with less than 5% divergence between maternal and paternal haplotypes. When run on organisms with higher heterozygsity determining homology between haplotypes is ineffective as currently implemented. FALCON-Phase performs well on an F1 bull with [0.9% heterozygosity](https://www.biorxiv.org/content/early/2018/02/26/271486) and has not been thoroughly tested on samples with lower heterozygosity.
 
-To run the pipeline you need a FALCON-Unzip assembly and Hi-C data. See [PacBio](https://www.pacb.com/calculator-whole-genome-sequencing/) recommendations for assembly coverage. For Hi-C we suggest 100 million read pairs per 1 Gb of genome length, with adjustments for genome complexity and library quality.
+To run the pipeline you need a [FALCON-Unzip](http://pb-falcon.readthedocs.io/en/latest/quick_start.html) assembly and Hi-C data. See [PacBio](https://www.pacb.com/calculator-whole-genome-sequencing/) recommendations for assembly coverage. For Hi-C we suggest 100 million read pairs per 1 Gb of genome length, with adjustments for genome complexity and library quality.
 
 FALCON-Phase can be used to phase haplotype blocks within a contig and contigs within scaffolds. See our [preprint](brokenlink) for details.
 
@@ -62,29 +62,10 @@ The name_mapping.txt file maps each haplotig to a primary contig and is required
 000001F	000001F_003
 ```
 
-3. Edit the `config.json` in the pipeline folder, filling out the paths to the dependencies, and sample information. The tables below explains the fields in the config file. 
+3. Edit the config files
 
-### Enviromental setup :vhs:
+If you are running on a cluster that uses modules, you can load the binaries with a series of commands in the `config.sh` file. Below is an example `config.sh`. 
 
-| Key           | Value                                             | Explanation     |
-| ------------- |:-------------------------------------------------:|:---------------|
-| env           | config.sh                                         | This file is sourced by the shell and loads enviromental variables |
-| CPU           | number of CPUs to use                             |   2 |
-| nucmer        | /path/to/mummer/bin/nucmer                        |   Path to nucmer |
-| delta-filter  | /path/to/mummer/bin/delta-filter                  |   Path to delta-filter |
-| show-coords   | /path/to/mummer/bin/show-coords                   |   Path to show-coords |
-| samtools      | /path/to/samtools                                 |   Path to samtools |
-| hp            | /path/to/FALCON-Phase/bin/coords2hp.py            |  Path to coords2hp.py |
-| hpfilt        | /path/to/FALCON-Phase/bin/filt_hp.py              |  Path to filt_hp.py |
-| falcon_phase  | /path/to/FALCON-Phase/bin/falcon-phase            |  Path to falcon-phase | 
-| falcon_oi     | /path/to/FALCON-Phase/bin/primary_contig_index.pl |  Path to primary_contig_index.pl | 
-| bedtools      | /path/to/bedtools                                 |  Path to bedtools | 
-| bwa           | path: /path/to/bwa                                |  Path to bwa |
-| bwa           | cpu: 24                                           |  number of CPUs for bwa mapping |
-
-If you already have binaries for the dependencies via cluster modules you will want to use the `config.sh` to load them. Below is an example `config.sh`. The paths to the binaries in the config.json will need to match where the cluster loads the modules (e.g. `which samtools` returns the path to the binary).
-
-Example of `config.sh`
 ```
 module load snakemake
 module load bwa/0.7.17
@@ -93,6 +74,27 @@ module load samtools/1.7
 module load mummer/4.0.0
 ```
 
+Next, edit the `config.json` in the pipeline folder, filling out the paths to the dependencies, and sample information. The paths to the required binaries in the config.json can be determined using `which` (e.g. `which samtools` returns the path to the binary).
+
+The tables below explains the fields in the config file. 
+
+### Enviromental setup :vhs:
+
+| Key           | Value                                             | Explanation     |
+| ------------- |:-------------------------------------------------:|:---------------|
+| env           | config.sh                                         | This file is sourced by the shell and loads enviromental variables |
+| CPU           | 2                                                 |  default number of CPUs to use |
+| nucmer        | /path/to/mummer/bin/nucmer                        |  Path to nucmer |
+| delta-filter  | /path/to/mummer/bin/delta-filter                  |  Path to delta-filter |
+| show-coords   | /path/to/mummer/bin/show-coords                   |  Path to show-coords |
+| samtools      | /path/to/samtools                                 |  Path to samtools |
+| hp            | /path/to/FALCON-Phase/bin/coords2hp.py            |  Path to coords2hp.py |
+| hpfilt        | /path/to/FALCON-Phase/bin/filt_hp.py              |  Path to filt_hp.py |
+| falcon_phase  | /path/to/FALCON-Phase/bin/falcon-phase            |  Path to falcon-phase | 
+| falcon_oi     | /path/to/FALCON-Phase/bin/primary_contig_index.pl |  Path to primary_contig_index.pl | 
+| bedtools      | /path/to/bedtools                                 |  Path to bedtools | 
+| bwa           | /path/to/bwa                                      |  Path to bwa |
+| bwa           | cpu: 24                                           |  number of CPUs for bwa mapping |
 
 
 ### Sample setup :link:
@@ -106,7 +108,7 @@ module load mummer/4.0.0
 | h_ctgs       | /path/to/cns_h_ctg.clean.fasta | Path to CLEANED haplotigs |
 | r1           | /path/to/FALCON-Phase/test_dataset/S3HiC_R1.fastq  | Hi-C read-pair 1 |
 | r2           | /path/to/FALCON-Phase/test_dataset/S3HiC_R2.fastq  | Hi-C read-pair 2 |
-| enzyme       | GATC                                   | The restriction enzyme used for Hi-C library prep |
+| enzyme       | GATC                                   | The restriction enzyme recognition seq used for Hi-C library prep |
 | iter         | 10000                                  | The number of iterations for phasing algorithm, 10e7 is recommended |
 
 
