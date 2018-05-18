@@ -46,7 +46,7 @@ We have provided a small pseudo test dataset ([sample info](https://www.ncbi.nlm
 
 1. Install the pipeline (as shown in the Install Process)
 
-2. Clean the headers of the test FALCON-Unzip assembly files and generate the name_mapping.txt file. We have provides a perl script to do this for you: `scrub_names.pl` in the bin directory. The script scrubs away the "|arrow" suffix on the FASTA headers for each of downstream steps.
+2. Clean the headers of the test FALCON-Unzip assembly files and generate the name_mapping.txt file. We have provides a perl script to do this for you: `scrub_names.pl` in the bin directory. The script removes the "|arrow" suffix on the FASTA headers and makes new files with the ".cleaned" suffix on the base name.
 
 Usage:
 
