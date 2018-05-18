@@ -9,7 +9,7 @@ Read about the method and its performance in our [preprint](brokenlink).
 
 ## Recommended Usage Case :monkey:
 
-FALCON-Phase was developed to solve the problem of haplotype switching in diploid genome assemblies. It has been tested on mammalian assemblies and can be applied to other outbred diploid organisms with less than 5% divergence between maternal and paternal haplotypes. When run on organisms with higher heterozygsity determining homology between haplotypes is ineffective as currently implemented.
+FALCON-Phase was developed to solve the problem of haplotype switching in diploid genome assemblies. It has been tested on mammalian assemblies and can be applied to other outbred diploid organisms with less than 5% divergence between maternal and paternal haplotypes. When run on organisms with higher heterozygsity determining homology between haplotypes is ineffective as currently implemented. FALCON-Phase performs well on an F1 bull with [0.9% heterozygosity](https://www.biorxiv.org/content/early/2018/02/26/271486) and is curently untested on samples with lower variation.
 
 To run the pipeline you need a FALCON-Unzip assembly and Hi-C data. See [PacBio](https://www.pacb.com/calculator-whole-genome-sequencing/) recommendations for assembly coverage. For Hi-C we suggest 100 million read pairs per 1 Gb of genome length, with adjustments for genome complexity and library quality.
 
@@ -21,14 +21,14 @@ FALCON-Phase can be used to phase haplotype blocks within a contig and contigs w
 We did our best to minimize dependencies, but there are a number of standard bioinformatics tools required by the pipeline.
 The version numbers of the dependencies are listed below, but new/older versions should work, but are untested. The required binaries are specified in the config.json file.  
 + **Python    (3.6)**             -  Running Snakemake
-+ **Snakemake (3.6)**             -  Running the pipeline interactively or on a cluster 
++ **NumPy     (1.14.2)**          -  Auxilary pipeline python scripts
++ **Snakemake (3.6)**             -  Running the pipeline interactively or on a cluster 
 + **BWA       (v0.7.17)**         -  Mapping the Hi-C to the minced contigs
 + **Mummer 4  (4.0.0)**           -  Mapping the haplotigs (h contigs)
 + **BEDTools  (2.27.1)**          -  Creating AB pair index 
 + **HSTLIB    (1.5 or greater)**  -  Internal dependency (bundled with FALCON-Phase)
 + **SAMTOOLS  (1.5 or greater)**  -  Indexing fasta files
 
-In addition, the **NumPy** library is required.
 
 
 ## Installation :floppy_disk:
