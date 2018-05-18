@@ -103,7 +103,7 @@ The tables below explains the fields in the config file.
 | ------------ |:-------------------------------------:|:------------------------------------------------ |
 | name         | test                                  | The name of the sample, most output files will have this prefix |
 | min_aln_len  | 3000                                  | The minimal alignment length to consider during haplotig placement |
-| h_to_p       | /path/to/name_mapping_tiny.txt        | A file that maps the haplotig names to primary contig names |
+| p_to_h       | /path/to/name_mapping_tiny.txt        | A file that maps the haplotig names to primary contig names |
 | p_ctgs       | /path/to/cns_p_ctg.clean.fasta | Path to CLEANED primary contigs |
 | h_ctgs       | /path/to/cns_h_ctg.clean.fasta | Path to CLEANED haplotigs |
 | r1           | /path/to/FALCON-Phase/test_dataset/S3HiC_R1.fastq  | Hi-C read-pair 1 |
@@ -114,7 +114,7 @@ The tables below explains the fields in the config file.
 
 4. Phew! Take a deep breath, you're almost done.
 
-5a. Run the `snakemake` pipeline locally. To do so, on my computer, I need to be in a python 3.6 virtual environment with numPy libraries loaded. This differs between machines, so you'll need to get that sorted out. Here's the command to run the FALCON-Phase snakemake pipeline:
+5a. Run the `snakemake` pipeline locally. To do so, on my computer, I need to be in a python 3.6 virtual environment with `NumPy` libraries loaded. This differs between machines, so you'll need to get that sorted out. Here's the command to run the FALCON-Phase snakemake pipeline:
 
 ```
 (py36)$ snakemake -s snakefile --verbose -p
@@ -150,7 +150,7 @@ The FALCON-Phase pipeline has a number of steps that are implemented by rules in
 
 ![FP Workflow](https://github.com/phasegenomics/FALCON-Phase/blob/master/logo/FALCONphaseFig1.png)
 
-### Haplotig Placement
+### Haplotig Placement (Workflow Step 2)
 
 The haplotig placement file specifies where each haplotig aligns to its primary contig and is used to define phase blocks in the FALCON-Unzip assembly. Making the haplotig placement file involved several steps. First, `nucmer` is used to align all FALCON-Unzip haplotigs to their primary contig. This step produces delta files for each primary contig.
 
@@ -181,7 +181,7 @@ The haplotig placement file is made by calling two scripts, `coords2hp.py` then 
             ├── test.hbird.filt_hp.txt/        # final haplotig placement file
             ├── test.AB_pairs.txt/             # pairing of A-B haplotigs (phase blocks)
 
-### Mincing
+### Mincing (Workflow Step 3)
 
 Once the haplotig placement file and A-B phase block pairings are done, the primary contigs are minced at phase block boundaries. Mincing allows Hi-C reads to be mapped to each pair of phase block so that the density of Hi-C connections can be used to assign blocks to the same phase.
 
@@ -198,7 +198,7 @@ Once the haplotig placement file and A-B phase block pairings are done, the prim
             ├── B_haplotigs_merged.bed/   # merging of overlapping B haplotigs (used to define collapsed regions)
 
 
-### Mapping of Hi-C Reads
+### Mapping of Hi-C Reads (Workflow Step 4)
 
 Hi-C reads are mapped to the minced FASTA file using `bwa mem`, streamed and processed in `samtools` and filtered with a FALCON-Phase utility:
 
@@ -207,7 +207,7 @@ Hi-C reads are mapped to the minced FASTA file using `bwa mem`, streamed and pro
         ├── test.filtered.bam/       # filtered Hi-C reads mapped to minced FASTA
         
 
-### Phasing
+### Phasing (Workflow Step 5)
 
 The binary matrix and index file are input to the FALCON-Phase algorithm to assign phase to each A-B phase block pair. The index file is created by the `primary_contig_index.pl` script.
 
@@ -217,7 +217,7 @@ The binary matrix and index file are input to the FALCON-Phase algorithm to assi
         ├── test.phased.txt/        # phase assignment for each A-B phase block pair
         
 
-### Emission of Phased Haplotigs
+### Emission of Phased Haplotigs (Workflow Step 6)
 
 The final output of FALCON-Phase is two phased, full-length haplotigs for each primary contig. This is done by the `emit_haplotigs.pl` script.
 
