@@ -13,14 +13,14 @@
         "emit"         : "/path/to/FALCON-Phase/bin/emit_haplotigs.pl",
         "bwa"          : {
                        "path" : "/path/to/bwa",
-                       "cpu"  : "2"
+                       "cpu"  : "24"
                        },
         "sample": {
                   "name"        : "test_data",
                   "min_aln_len" : "5000",
                   "p_to_h"      : "name_mapping.txt",
-                  "p_ctgs"      : "/path/to/FALCON-Phase/test_data/cns_p_ctg.fasta",
-                  "h_ctgs"      : "/path/to/FALCON-Phase/test_data/cns_h_ctg.fasta",
+                  "p_ctgs"      : "/path/to/FALCON-Phase/test_data/cns_p_ctg.clean.fasta",
+                  "h_ctgs"      : "/path/to/FALCON-Phase/test_data/cns_h_ctg.clean.fasta",
                   "r1"          : "/path/to/FALCON-Phase/test_data/S3HiC_R1.fastq",
                   "r2"          : "/path/to/FALCON-Phase/test_data/S3HiC_R2.fastq",
                         "enzyme"      : "GATC",
