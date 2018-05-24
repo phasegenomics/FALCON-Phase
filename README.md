@@ -9,11 +9,11 @@ Read about the method and its performance in our [preprint](http://biorxiv.org/c
 
 ## Recommended Usage Case :monkey:
 
-FALCON-Phase was developed to solve the problem of haplotype switching in diploid genome assemblies. It has been tested on mammalian assemblies and can be applied to other outbred diploid organisms with less than 5% divergence between maternal and paternal haplotypes. When run on organisms with higher heterozygsity determining homology between haplotypes is ineffective as currently implemented. FALCON-Phase performs well on an F1 bull with [0.9% heterozygosity](https://www.biorxiv.org/content/early/2018/02/26/271486) and has not been thoroughly tested on samples with lower heterozygosity.
+FALCON-Phase was developed to solve the problem of haplotype switching in diploid genome assemblies. It has been tested on mammalian assemblies and can be applied to other outbred diploid organisms with less than 5% divergence between maternal and paternal haplotypes. When run on organisms with higher heterozygsity determining homology between haplotypes is ineffective as currently implemented. FALCON-Phase performs well on an F1 bull with [0.7% heterozygosity](https://www.biorxiv.org/content/early/2018/02/26/271486) and has not been thoroughly tested on samples with lower heterozygosity.
 
 To run the pipeline you need a [FALCON-Unzip](http://pb-falcon.readthedocs.io/en/latest/quick_start.html) assembly and Hi-C data. See [PacBio](https://www.pacb.com/calculator-whole-genome-sequencing/) recommendations for assembly coverage. For Hi-C we suggest 100 million read pairs per 1 Gb of genome length, with adjustments for genome complexity and library quality.
 
-FALCON-Phase can be used to phase haplotype blocks within a contig and contigs within scaffolds. See our [preprint](brokenlink) for details.
+FALCON-Phase can be used to phase haplotype blocks within a contig and contigs within scaffolds. See our [preprint](http://biorxiv.org/cgi/content/short/327064v1) and SFAF [slides](http://pb-falcon.readthedocs.io/en/latest/_downloads/FALCON-Phase_SBKingan_23May2018SFAF.pdf) for details.
 
 
 ## Dependencies :rage2:
