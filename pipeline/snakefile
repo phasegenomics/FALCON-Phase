@@ -141,7 +141,7 @@ rule mince_bed   :
 
             {input.BT} merge -i {output.B} > mince/B_haplotigs_merged.bed
 
-            cut -f1,2 {input.PCTG}.fai > tmp.genome
+            cut -f1,2 {input.PCTG}.fai | sort -k1,1 > tmp.genome
 
             # make BED file for collapsed region, exclude haplotigs
             {input.BT} complement -i mince/B_haplotigs_merged.bed -g tmp.genome > {output.C}
