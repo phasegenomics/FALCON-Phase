@@ -65,6 +65,9 @@ open (PH, $phase_file) or die "Could not open file '$phase_file'";
 while (my $line = <PH>) {
 	chomp $line;
 	my @line_array = split(" ", $line);
+	if ($line_array[3] eq "-nan") {
+		print STDERR "Warning: error in phasing ", $line_array[1], " and ", $line_array[2], " 'phased.txt' contains '-nan'\n";
+	}
 	$phase_hash{$line_array[1]}{'phase'} = 0;
 	$phase_hash{$line_array[2]}{'phase'} = 1;
 	$phase_hash{$line_array[1]}{'pair'} = $line_array[2];
