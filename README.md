@@ -223,7 +223,7 @@ The final output of FALCON-Phase is two phased, full-length haplotigs for each p
 
         job_dir/
         ├── phase0.bed/    # list of minced contigs used to reconstruct full-length phase 0 haplotig
-        ├── phase0.bed/    # list of minced contigs used to reconstruct full-length phase 1 haplotig
+        ├── phase1.bed/    # list of minced contigs used to reconstruct full-length phase 1 haplotig
         ├── test.p_h_ctg.fa/   # concatenated FALCON-Unzip asm files, used to reconstruct full-length haplotig
         ├── test.diploid_phased.fasta/   # final output
 
