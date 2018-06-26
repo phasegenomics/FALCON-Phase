@@ -1,29 +1,30 @@
 {
-        "env"          : "config.sh",
-        "CPU"          : "2",
-        "nucmer"       : "/path/to/mummer/bin/nucmer",
-        "delta-filter" : "/path/to/mummer/bin/delta-filter",
-        "show-coords"  : "/path/to/mummer/bin/show-coords",
-        "samtools"     : "/path/to/samtools",
-        "hp"           : "/path/to/FALCON-Phase/bin/coords2hp.py",
-        "hpfilt"       : "/path/to/FALCON-Phase/bin/filt_hp.py",
-        "falcon_phase" : "/path/to/FALCON-Phase/bin/falcon-phase",
-        "falcon_oi"    : "/path/to/FALCON-Phase/bin/primary_contig_index.pl",
-        "bedtools"     : "/path/to/bedtools",
-        "emit"         : "/path/to/FALCON-Phase/bin/emit_haplotigs.pl",
-        "bwa"          : {
-                       "path" : "/path/to/bwa",
-                       "cpu"  : "24"
-                       },
-        "sample": {
-                  "name"        : "test_data",
-                  "min_aln_len" : "5000",
-                  "p_to_h"      : "name_mapping.txt",
-                  "p_ctgs"      : "/path/to/FALCON-Phase/test_data/cns_p_ctg.clean.fasta",
-                  "h_ctgs"      : "/path/to/FALCON-Phase/test_data/cns_h_ctg.clean.fasta",
-                  "r1"          : "/path/to/FALCON-Phase/test_data/S3HiC_R1.fastq",
-                  "r2"          : "/path/to/FALCON-Phase/test_data/S3HiC_R2.fastq",
-                        "enzyme"      : "GATC",
-                        "iter"        : "10000"
-                }
+	"env"		: "config.sh",
+	"CPU"		: "2",
+	"nucmer"	: "/path/to/mummer/bin/nucmer",
+	"delta-filter"	: "/path/to/mummer/bin/delta-filter",
+	"show-coords"	: "/path/to/mummer/bin/show-coords",
+	"samtools"	: "/path/to/samtools",
+	"hp"		: "/path/to/FALCON-Phase/bin/coords2hp.py",
+	"hpfilt"	: "/path/to/FALCON-Phase/bin/filt_hp.py",
+	"falcon_phase"	: "/path/to/FALCON-Phase/bin/falcon-phase",
+	"falcon_oi"	: "/path/to/FALCON-Phase/bin/primary_contig_index.pl",
+	"bedtools"	: "/path/to/bedtools",
+	"emit"		: "/path/to/FALCON-Phase/bin/emit_haplotigs.pl",
+	"bwa"		: {
+		"path"	: "/path/to/bwa",
+		"cpu"	: "24"
+	},
+	"sample": {
+		"name"			: "test_data",
+		"output_format"		: "pseudohap",
+		"min_aln_len"		: "5000",
+		"p_to_h"		: "name_mapping.txt",
+		"p_ctgs"		: "/path/to/FALCON-Phase/test_data/cns_p_ctg.clean.fasta",
+		"h_ctgs"		: "/path/to/FALCON-Phase/test_data/cns_h_ctg.clean.fasta",
+		"r1"			: "/path/to/FALCON-Phase/test_data/S3HiC_R1.fastq",
+		"r2"			: "/path/to/FALCON-Phase/test_data/S3HiC_R2.fastq",
+		"enzyme"		: "GATC",
+		"iter"			: "10000"
+	}
 }
