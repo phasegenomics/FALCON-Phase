@@ -34,17 +34,26 @@ def _get_PER(wildcards):
 
 
 rule dummy :
-     input : expand("{sample}.diploid_phased.fasta", sample=SAMPLES),
+     input : expand(["output/{sample}.phased.0.fasta", "output/{sample}.phased.1.fasta", "output/{sample}.phased.0.bed", "output/{sample}.phased.1.bed"], sample=SAMPLES)
 
 rule emit_haplotigs :
      message    : "[info] emitting phased haplotigs"
-     input      : EH=config['emit'], PH="{sample}.phased.txt", BC="mince/{sample}.BC.bed", FA="{sample}.p_h_ctg.fa", BED=config['bedtools']
-     output     : "{sample}.diploid_phased.fasta"
+     input      : EH=config['emit'], PH="phasing/{sample}.phased.txt", BC="mince/{sample}.BC.bed", FA="{sample}.p_h_ctg.fa", BED=config['bedtools']
+     output     : F0="output/{sample}.phased.0.fasta", F1="output/{sample}.phased.1.fasta", B0="output/{sample}.phased.0.bed", B1="output/{sample}.phased.1.bed"
+     params     : FMT=config['sample']['output_format']
      shell      : """
-            {input.EH} {input.PH} {input.BC} {input.FA} {input.BED} > {output}
+            {input.EH} {input.PH} {input.BC} {input.FA} {input.BED} {params.FMT}
 
             rm tmp_phase1.txt
             rm tmp_phase0.txt
+	    rm {input.FA}
+	    rm {input.FA}.fai
+	    
+	    mv f0.fa {output.F0}
+	    mv f1.fa {output.F1}
+	    mv b0.bed {output.B0}
+	    mv b1.bed {output.B1}
+
      """
 
 rule prep_emit  :
@@ -59,19 +68,18 @@ rule prep_emit  :
 
 rule phase      :
     message     : "[info] running falcon-phase binary"
-    input       : IDX="{sample}.ov_index.txt", FA="mince/{sample}.minced.fasta", BINMAT="{sample}.binmat",  FP=config['falcon_phase']
-    output      : "{sample}.phased.txt"
+    input       : IDX="phasing/{sample}.ov_index.txt", FA="mince/{sample}.minced.fasta", BINMAT="phasing/{sample}.binmat",  FP=config['falcon_phase']
+    output      : "phasing/{sample}.phased.txt"
     params      : PER=_get_PER, ENZ=_get_ENZYME
     shell       : """
 
         {input.FP} phase -f {input.FA} -b {input.BINMAT} -m {params.ENZ} -i {input.IDX} -p tmp -s {params.PER} > {output}
-
     """
 
 rule index_pair :
      message    : "[info] building haplotig overlap index for falcon phase"
      input      : ABC="mince/{sample}.minced.fasta", ABP="haplotig_placement_file/{sample}.AB_pairs.txt", FOI=config['falcon_oi'], ST=config['samtools']
-     output     : "{sample}.ov_index.txt"
+     output     : "phasing/{sample}.ov_index.txt"
      shell      : """
      		{input.ST} faidx {input.ABC}
 		{input.FOI} {input.ABP} {input.ABC}.fai > {output}
@@ -80,16 +88,16 @@ rule index_pair :
 
 rule binmat  :
      message : "[info] building binary matrix of HiC contacts"
-     input   : FF=config['falcon_phase'], BAM="{sample}.filtered.bam"
-     output  : "{sample}.binmat"
+     input   : FF=config['falcon_phase'], BAM="hic_mapping/{sample}.filtered.bam"
+     output  : "phasing/{sample}.binmat"
      shell   : """
 	{input.FF} bam2 binmat {input.BAM} {output}
      """
 
 rule bam_filt   :
      message    : "[info] filtering BAM"
-     input      : FF=config['falcon_phase'], BAM="{sample}.unfiltered.bam"
-     output     : "{sample}.filtered.bam"
+     input      : FF=config['falcon_phase'], BAM="hic_mapping/{sample}.unfiltered.bam"
+     output     : "hic_mapping/{sample}.filtered.bam"
      shell      : """
 	{input.FF} bamfilt -f 20 -m 10 -i {input.BAM} -o {output}
      """
@@ -97,7 +105,7 @@ rule bam_filt   :
 rule aln      :
      message  : "[info] BWA alignments of HiC read pairs"
      input    : BWA=config['bwa']['path'], REF="mince/{sample}.minced.fasta", ST=config['samtools'], R1=config['sample']['r1'], R2=config['sample']['r2']
-     output   : "{sample}.unfiltered.bam"
+     output   : "hic_mapping/{sample}.unfiltered.bam"
      params   : CPU=config['bwa']['cpu']
      shell    : """
 
