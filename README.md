@@ -9,7 +9,7 @@ Read about the method and its performance in our [preprint](http://biorxiv.org/c
 
 ## Recommended Usage Case :monkey:
 
-FALCON-Phase was developed to solve the problem of haplotype switching in diploid genome assemblies. It has been tested on mammalian assemblies and can be applied to other outbred diploid organisms with less than 5% divergence between maternal and paternal haplotypes. When run on organisms with higher heterozygsity determining homology between haplotypes is ineffective as currently implemented. FALCON-Phase performs well on an F1 bull with [0.7% heterozygosity](https://www.biorxiv.org/content/early/2018/02/26/271486) and has not been thoroughly tested on samples with lower heterozygosity.
+FALCON-Phase was developed to solve the problem of haplotype switching in diploid genome assemblies. It has been tested on mammalian assemblies and performs well on an F1 bull with [0.7% heterozygosity](https://www.biorxiv.org/content/early/2018/02/26/271486). It has not been thoroughly tested on samples with very low or very high heterozygosity. In principle, it can be applied to outbred diploid organisms with less than 5% divergence between maternal and paternal haplotypes; when run on organisms with higher heterozygsity determining homology between haplotypes is ineffective as currently implemented. For samples with low heterozygosity, you should determine how much of your genome has "unzipped" by comparing the lengths of your haplotigs to those of your primary contigs. If the total haplotig length is small, FALCON-Phase will have limited utility.
 
 To run the pipeline you need a [FALCON-Unzip](http://pb-falcon.readthedocs.io/en/latest/quick_start.html) assembly and Hi-C data. See [PacBio](https://www.pacb.com/calculator-whole-genome-sequencing/) recommendations for assembly coverage. For Hi-C we suggest 100 million read pairs per 1 Gb of genome length, with adjustments for genome complexity and library quality.
 
@@ -102,6 +102,7 @@ The tables below explains the fields in the config file.
 | Key          | Value                                 | Explanation                                      |
 | ------------ |:-------------------------------------:|:------------------------------------------------ |
 | name         | test                                  | The name of the sample, most output files will have this prefix |
+| output_format| pseudohap                             | The desired output format ("unzip" or "pseudohap") |
 | min_aln_len  | 3000                                  | The minimal alignment length to consider during haplotig placement |
 | p_to_h       | /path/to/name_mapping_tiny.txt        | A file that maps the haplotig names to primary contig names |
 | p_ctgs       | /path/to/cns_p_ctg.clean.fasta | Path to CLEANED primary contigs |
@@ -120,7 +121,7 @@ The tables below explains the fields in the config file.
 (py36)$ snakemake -s snakefile --verbose -p
 ```
 
-Snakemake will start printing information to your screen about the process. This example dataset only takes a few minutes to run, but a "real" job will take longer and should be run in the background. Once everthing is done you should see the final file `test.diploid_phased.fasta` in the pipeline folder.
+Snakemake will start printing information to your screen about the process. This example dataset only takes a few minutes to run, but a "real" job will take longer and should be run in the background. Once everthing is done you should see four files in the `output` direstory.
 
 5b. Run the `snakemake` on a cluster. Snakemake can be run on a cluster and submit jobs the scheduler. We have included an SGE cluster config file as an example. The table below explains the fields in the `cluster.config.sge.json`. 
 
@@ -200,11 +201,12 @@ Once the haplotig placement file and A-B phase block pairings are done, the prim
 
 ### Mapping of Hi-C Reads (Workflow Step 4)
 
-Hi-C reads are mapped to the minced FASTA file using `bwa mem`, streamed and processed in `samtools` and filtered with a FALCON-Phase utility:
+Hi-C reads are mapped to the minced FASTA file using `bwa mem`, streamed and processed in `samtools` and filtered with a FALCON-Phase utility. This is usually the most time consuming step and typically runs overnight on a mammalian genome with 24-48 cores.
 
         job_dir/
-        ├── test.unfiltered.bam/     # Hi-C reads mapped to minced FASTA
-        ├── test.filtered.bam/       # filtered Hi-C reads mapped to minced FASTA
+        ├── hic_mapping/
+                ├── test.unfiltered.bam/     # Hi-C reads mapped to minced FASTA
+                ├── test.filtered.bam/       # filtered Hi-C reads mapped to minced FASTA
         
 
 ### Phasing (Workflow Step 5)
@@ -212,22 +214,24 @@ Hi-C reads are mapped to the minced FASTA file using `bwa mem`, streamed and pro
 The binary matrix and index file are input to the FALCON-Phase algorithm to assign phase to each A-B phase block pair. The index file is created by the `primary_contig_index.pl` script.
 
         job_dir/
-        ├── test.binmat/            # binary matric of normalized Hi-C mappings
-        ├── test.ov_index.txt/      # index file of ordering of minced contigs on each primary contig and A-B phase block pairings
-        ├── test.phased.txt/        # phase assignment for each A-B phase block pair
+        ├── phasing/
+                ├── test.binmat/            # binary matric of normalized Hi-C mappings
+                ├── test.ov_index.txt/      # index file of ordering of minced contigs on each primary contig and A-B phase block pairings
+                ├── test.phased.txt/        # phase assignment for each A-B phase block pair
         
 
 ### Emission of Phased Haplotigs (Workflow Step 6)
 
-The final output of FALCON-Phase is two phased, full-length haplotigs for each primary contig. This is done by the `emit_haplotigs.pl` script.
+You have two options for the final output of FALCON-Phase, which is generated by the `emit_haplotigs.pl` script. `pseudohap` output is two phased full-length pseudo-haplotypes for each primary contig. `unzip` style output is a primary contig file and haplotigs file with the phase-switch errors corrected. "Phase 0" output corresponds to the primary contigs and "Phase 1" to the haplotigs.
 
         job_dir/
-        ├── phase0.bed/    # list of minced contigs used to reconstruct full-length phase 0 haplotig
-        ├── phase0.bed/    # list of minced contigs used to reconstruct full-length phase 1 haplotig
-        ├── test.p_h_ctg.fa/   # concatenated FALCON-Unzip asm files, used to reconstruct full-length haplotig
-        ├── test.diploid_phased.fasta/   # final output
+        ├── output/
+                ├── test_data.phased.0.bed/    # list of minced contigs used to reconstruct phase 0 output
+                ├── test_data.phased.1.bed/    # list of minced contigs used to reconstruct phase 1 output
+                ├── test_data.phased.0.fasta/   # phase 0 output
+                ├── test_data.phased.1.fasta/   # phase 1 output
 
-The final output FASTA headers look like:
+For the `pseudohap` the final output FASTA headers look like:
 
 ```
 >000000F_0
@@ -237,6 +241,24 @@ The final output FASTA headers look like:
 ```
 
 Phase is specified by the `_0` or `_1` suffix on the original FALCON-Unzip primary contig IDs.
+
+For the `unzip` style output, the fasta headers are the same as what you are used to with FALCON-Unzip:
+
+Primary contigs:
+```
+>000000F
+>000001F
+```
+Haplotigs:
+```
+>000000F_001
+>000000F_003
+>000000F_002
+>000001F_003
+>000001F_001
+>000001F_002
+```
+
 
 
 
