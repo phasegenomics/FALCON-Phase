@@ -40,6 +40,7 @@ struct line_data{
 struct phasing_options{
   int       verbose;
   double    nsweeps;
+  double     burnin;
   double    damping;
   char  *     fasta;
   char  *    binmat;

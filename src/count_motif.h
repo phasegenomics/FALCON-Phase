@@ -12,19 +12,20 @@
 #include <getopt.h>
 #include "htslib/faidx.h"
 #include "dna.h"
-
-
+#include "string_parser.h"
 
 struct sequence{
-  char     * name;
-  int        slen;
-  uint32_t   cutcount;
+  char         * name;
+  uint32_t       slen;
+  uint32_t * cutcount;
 };
 
 struct sequenceInfo{
-    int nseq;
-    struct sequence * dat;
-    faidx_t * fai;
+  uint32_t          nseq;
+  uint32_t      ncutters;
+  char **       cutter_motifs;
+  struct sequence * dat;
+  faidx_t * fai;
 };
 
 
