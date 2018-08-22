@@ -63,11 +63,18 @@ void print_phasing_usage(void)
 	fprintf(stderr, "      -p output prefix\n");
 	fprintf(stderr, "      -i overlap index file\n");
 	fprintf(stderr, "   + options: \n");
-	fprintf(stderr, "      -s number of iterations [2,000,000]\n");
+	fprintf(stderr, "      -n number of iterations [2,000,000]\n");
 	fprintf(stderr, "      -u number of  burnin iterations [1,000,000]\n");
+	fprintf(stderr, "      -s seed value for rand() [time]\n");
 	fprintf(stderr, "      -v dump large data [false]\n\n");
 }
 
+/**
+ * parse_command_line_phasing description : load globally scoped options struct
+ * @param  argv - argv from main
+ * @param  argc - argc from main
+ * @return      [description]
+ */
 int parse_command_line_phasing(char ** argv, int argc)
 {
 
@@ -79,21 +86,23 @@ int parse_command_line_phasing(char ** argv, int argc)
 	global_opts_phasing.prefix     = NULL;
 	global_opts_phasing.index      = NULL;
 	global_opts_phasing.verbose    = 0;
+	global_opts_phasing.seed       = -1;
 
 
 	int c;
-	const char    * short_opt = "hf:b:s:m:p:v:i:u:";
+	const char    * short_opt = "hf:b:n:m:p:v:i:u:s:";
 	struct option long_opt[] =
 	{
 		{"help",          no_argument,       NULL, 'h'},
 		{"index",         required_argument, NULL, 'i'},
 		{"fasta",         required_argument, NULL, 'f'},
 		{"bin",           required_argument, NULL, 'b'},
-		{"sweep",         optional_argument, NULL, 's'},
+		{"niters",         optional_argument, NULL,'n'},
 		{"cutoff",        optional_argument, NULL, 'u'},
 		{"motif",         required_argument, NULL, 'm'},
 		{"prefix",        required_argument, NULL, 'p'},
 		{"verbose",       no_argument,       NULL, 'v'},
+		{"seed",          optional_argument, NULL, 's'},
 		{NULL,            0,                 NULL, 0  }
 	};
 
@@ -141,7 +150,7 @@ int parse_command_line_phasing(char ** argv, int argc)
 			global_opts_phasing.binmat = optarg;
 			break;
 		}
-		case 's':
+		case 'n':
 		{
 			global_opts_phasing.nsweeps = atoi(optarg);
 			break;
@@ -151,6 +160,13 @@ int parse_command_line_phasing(char ** argv, int argc)
 			global_opts_phasing.burnin = atoi(optarg);
 			break;
 		}
+		case 's':
+		{
+			global_opts_phasing.seed = atoi(optarg);
+			break;
+		}
+
+
 		default:
 		{
 			/* invalid option */
@@ -178,7 +194,12 @@ int parse_command_line_phasing(char ** argv, int argc)
 	return 0;
 }
 
-
+/*
+ * normalize_matrix_phasing description: takes the matrix.h object and normalizes the hi-c counts based on the number of restriction sites on each sequence.
+ * @param  mat - matrix object pointer defined in matrix.h
+ * @param  seq - sequenceInfo object pointer defined in count_motif.c. It contains the sequence name/length/cutsite counts
+ * @return     [description]
+ */
 int normalize_matrix_phasing(struct matrix * mat, struct sequenceInfo * seq)
 {
 
@@ -214,10 +235,14 @@ int normalize_matrix_phasing(struct matrix * mat, struct sequenceInfo * seq)
 		}
 	}
 
-
 	return 0;
 }
 
+/**
+ * parse_index_file description: this ugly function parses the overlap index file using a custom string parser defined in
+ * @param  fn [description]
+ * @return    [description]
+ */
 struct line_data * parse_index_file(const char * fn){
 
 	struct line_data * head = NULL;
@@ -238,7 +263,6 @@ struct line_data * parse_index_file(const char * fn){
 	char * line = NULL;
 
 	while( (read = getline(&line, &len, fp)) != -1) {
-		//fprintf(stderr, "%s", line );
 
 		int s = 0;
 		int e = 0;
@@ -246,7 +270,6 @@ struct line_data * parse_index_file(const char * fn){
 		char * group        = get_next_word(line, &s, &e, 9);
 		char * master_index = get_next_word(line, &s, &e, 9);
 		char * overlap      = get_next_word(line, &s, &e, 9);
-		//fprintf(stderr, "%s %s %s\n", group, master_index, overlap );
 		overlap[strlen(overlap)-1] = '\0';
 
 		int nctg = 1;
@@ -339,19 +362,24 @@ struct line_data * parse_index_file(const char * fn){
 
 }
 
+/*
+ * phase_likelihood description: Calculates the within vs between hi-c signal for all past diced haplotigs, given the past configuration
+ * @param  ov - overlap index
+ * @param  mv - normalized hi-c matrix
+ * @param  i  - index of current overlap (index)
+ * @return    [description]
+ */
 double phase_likelihood(struct ctg_overlap * ov,
                         struct matrix * mv,
-                        int i,
-                        int n){
+                        int i)
+{
 
-
-
+	// we set the within and between values to avoid a division by zero
 	double within  = 0.000001;
 	double between = 0.000001;
 
 	int j;
 	for(j = i -1; j >= 0; j--) {
-
 
 		if(ov[i].label_one == ov[j].label_one) {
 			within  += mv->dat[ov[i].first][ov[j].first];
@@ -366,24 +394,29 @@ double phase_likelihood(struct ctg_overlap * ov,
 
 			within += mv->dat[ov[i].first][ov[j].second];
 			within += mv->dat[ov[i].second][ov[j].first];
-
 		}
 	}
 
 	return within / (within + between);
 }
 
-int print_local(struct ctg_overlap * ov,
-                struct matrix *mv,
-                int n){
+/**
+ * print_local: a function to print data for troubleshooting. I don't remeber what this even does so don't mess with it.
+ * @param  ov [description]
+ * @param  mv [description]
+ * @param  n  [description]
+ * @return    [description]
+ */
+int _print_local(struct ctg_overlap * ov,
+                 struct matrix *mv,
+                 int n){
 	int i,j;
 
 	fprintf(stdout, "graph overlaps {\nrankdir=\"BT\";\n");
 
-
 	for(i = 0; i < n; i++) {
-		//  fprintf(stdout, "%i -> %i [label=\"%.3f\",weight=\"%.3f\",style=dotted,color=blue];\n", ov[i].first,
-		//          ov[i].second, mv->dat[ov[i].first][ov[i].second], mv->dat[ov[i].first][ov[i].first] +mv->dat[ov[i].second][ov[i].second]);
+		fprintf(stdout, "%i -> %i [label=\"%.3f\",weight=\"%.3f\",style=dotted,color=blue];\n", ov[i].first,
+		        ov[i].second, mv->dat[ov[i].first][ov[i].second], mv->dat[ov[i].first][ov[i].first] +mv->dat[ov[i].second][ov[i].second]);
 
 		for(j = i + 1; j < n; j++) {
 			fprintf(stdout, "%i -- %i [label=\"%.3f\"weight=\"%.3f\"];\n", ov[i].first,
@@ -416,9 +449,20 @@ int print_local(struct ctg_overlap * ov,
 	return 0;
 }
 
-int gibbs_phasing(struct line_data * ld,
-                  struct sequenceInfo * si,
-                  struct matrix * lc, int n){
+/**
+ * stochastic_phasing description : this is the function that does the phasing. It loops over the overlap index structure per primary contig and stochastically searches for the best haplotig configuration based on the hi-c data.
+ * @param  ld  - pointer to line_data array, each element is a haplotype.
+ * @param  si  - pointer to the sequenceInfo structure. see count_motif.h
+ * @param  lc  - pointer to hi-c matrix. see matrix.h
+ * @param  n   - number of primary contigs that have haplotigs.
+ * @param  res - FILE * to print the results to.
+ * @return     - zero upon success
+ */
+int stochastic_phasing(struct line_data * ld,
+                       struct sequenceInfo * si,
+                       struct matrix * lc, int n,
+                       FILE * results)
+{
 
 	struct line_data * tmpld = ld;
 
@@ -429,16 +473,13 @@ int gibbs_phasing(struct line_data * ld,
 			continue;
 		}
 
-		// print_local(tmpld->overlaps, lc, tmpld->n_overlap);
-		//  exit(1);
-
-		int iter, j;
+		uint32_t iter, j;
 
 		for(iter = 0; iter < global_opts_phasing.nsweeps; iter++) {
 
 			for(j = 0; j < tmpld->n_overlap; j++) {
 				double r = (double)rand() / (double)RAND_MAX;
-				double prob =  phase_likelihood(tmpld->overlaps, lc, j, tmpld->n_overlap);
+				double prob =  phase_likelihood(tmpld->overlaps, lc, j);
 
 				if(r > prob && j != 0) {
 					tmpld->overlaps[j].label_one ^= 1;
@@ -446,6 +487,7 @@ int gibbs_phasing(struct line_data * ld,
 				}
 				assert(tmpld->overlaps[j].label_one != tmpld->overlaps[j].label_two);
 
+				// if we've gone past the burning we start counting the orientation of each overlap (phase block)
 				if(iter > global_opts_phasing.burnin  && tmpld->overlaps[j].label_one == 1) tmpld->overlaps[j].label_count_one += 1;
 				if(iter > global_opts_phasing.burnin  && tmpld->overlaps[j].label_one == 0) tmpld->overlaps[j].label_count_two += 1;
 			}
@@ -460,10 +502,10 @@ int gibbs_phasing(struct line_data * ld,
 
 			double p = tmpld->overlaps[j].label_count_one / (double)(tmpld->overlaps[j].label_count_one + tmpld->overlaps[j].label_count_two);
 			if(p <= 0.5) {
-				fprintf(stdout, "%s %s %s %f %.4f %.4f %i %i\n", tmpld->group, s2, s1, 1-p, v2, v1, tmpld->overlaps[j].second, tmpld->overlaps[j].first );
+				fprintf(results, "%s %s %s %f %.4f %.4f %i %i\n", tmpld->group, s2, s1, 1-p, v2, v1, tmpld->overlaps[j].second, tmpld->overlaps[j].first );
 			}
 			else{
-				fprintf(stdout, "%s %s %s %f %.4f %.4f %i %i\n", tmpld->group, s1, s2, p, v1, v2, tmpld->overlaps[j].first, tmpld->overlaps[j].second);
+				fprintf(results, "%s %s %s %f %.4f %.4f %i %i\n", tmpld->group, s1, s2, p, v1, v2, tmpld->overlaps[j].first, tmpld->overlaps[j].second);
 			}
 		}
 		assert(tmpld != tmpld->after);
@@ -472,12 +514,14 @@ int gibbs_phasing(struct line_data * ld,
 	return 0;
 }
 
-
+/*
+ * run_phasing description : main
+ * @param  argv [description]
+ * @param  argc [description]
+ * @return      [description]
+ */
 int run_phasing(char ** argv, int argc)
 {
-
-	time_t t;
-	srand((unsigned) time(&t));
 
 
 
@@ -492,6 +536,13 @@ int run_phasing(char ** argv, int argc)
 		print_phasing_usage();
 		return 1;
 	}
+
+	int seed = time(NULL);
+	if(global_opts_phasing.seed  != -1) {
+		seed = global_opts_phasing.seed;
+	}
+	srand(seed);
+
 
 	char * cutsite_fn = malloc(strlen(global_opts_phasing.prefix) + 12);
 	char * data_fn    = malloc(strlen(global_opts_phasing.prefix) + 12);
@@ -518,7 +569,6 @@ int run_phasing(char ** argv, int argc)
 		n += 1;
 	}
 
-
 	// load the sequence info
 	struct sequenceInfo * sInfo = load_seq_info(global_opts_phasing.fasta, global_opts_phasing.motif);
 
@@ -527,24 +577,22 @@ int run_phasing(char ** argv, int argc)
 		return(1);
 	}
 
-
 	if(sInfo == NULL) return 1;
 	print_sequenceInfo(cutsites, sInfo);
 
 	// read the matrix
 	struct matrix * link_counts = thaw_matrix(global_opts_phasing.binmat);
 
-
+	// normlize the hi-c data
 	normalize_matrix_phasing(link_counts, sInfo);
 
-	gibbs_phasing(index_data, sInfo, link_counts, n);
-
+	// the wrapper function to run the phasing algorthim
+	stochastic_phasing(index_data, sInfo, link_counts, n, results);
 
 	fclose(cutsites);
 	fclose(results);
 
-
-
+	// cleanup allocated structures
 	destroy_matrix(link_counts);
 	destroy_sequence_info(sInfo);
 
