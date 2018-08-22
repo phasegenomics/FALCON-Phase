@@ -73,7 +73,7 @@ rule phase      :
     params      : PER=_get_PER, ENZ=_get_ENZYME
     shell       : """
 
-        {input.FP} phase -f {input.FA} -b {input.BINMAT} -m {params.ENZ} -i {input.IDX} -p {sample} -s {params.PER} 
+        {input.FP} phase -f {input.FA} -b {input.BINMAT} -m {params.ENZ} -i {input.IDX} -p {sample} -n {params.PER} 
     """
 
 rule index_pair :
