@@ -25,6 +25,6 @@
 		"r1"			: "/path/to/FALCON-Phase/test_data/S3HiC_R1.fastq",
 		"r2"			: "/path/to/FALCON-Phase/test_data/S3HiC_R2.fastq",
 		"enzyme"		: "GATC",
-		"iter"			: "10000"
+		"iter"			: "1000000"
 	}
 }
