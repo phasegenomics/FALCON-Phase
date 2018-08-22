@@ -6,6 +6,7 @@
 #include <getopt.h>
 #include <inttypes.h>
 #include <float.h>
+#include <time.h>
 
 #include "matrix.h"
 #include "count_motif.h"
@@ -39,6 +40,7 @@ struct line_data{
 
 struct phasing_options{
   int       verbose;
+  int          seed;
   double    nsweeps;
   double     burnin;
   double    damping;
