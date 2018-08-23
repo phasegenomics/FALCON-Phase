@@ -8,7 +8,7 @@ CFLAG=-Wall -O3
 INCLUDE=-I../htslib -Isrc 
 
 all: ../bin/falcon-phase
-	@echo "\n\n[INFO] build OK, found falcon-phase!\n\n"
+	@echo -e  "\n\n[INFO] build OK, found falcon-phase!\n\n"
 
 ../htslib/libhts.a:
 	cd ../htslib && $(MAKE)
