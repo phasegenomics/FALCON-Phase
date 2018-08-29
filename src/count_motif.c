@@ -70,7 +70,7 @@ int print_sequenceInfo(FILE * stream, struct sequenceInfo * sinfo)
 	return 0;
 }
 
-int32_t count_cutsite( char * motif, faidx_t * fai, const char * seqName, int seq_idx)
+int32_t count_cutsite( char * motif, faidx_t * fai, char * seqName, int seq_idx)
 {
 
 
@@ -87,19 +87,18 @@ int32_t count_cutsite( char * motif, faidx_t * fai, const char * seqName, int se
 
 	int32_t motif_n = 0;
 
-	char * sname = seqName;
+	char const * sname = (char *)seqName;
 
 	if(seqName == NULL) {
 		if(seq_idx >= n) {
 			fprintf(stderr, "FATAL: sequence index > number of sequences in fasta : in : %s \n ", __func__ );
-			free (sname);
 			return -1;
 		}
 		sname = faidx_iseq(fai, seq_idx);
 	}
 
 	if(faidx_has_seq(fai, sname) == 0) {
-		free (sname);
+		free (seqName);
 		return -1;
 	}
 
@@ -166,7 +165,7 @@ int count_cutsite_runner(char ** argv, int argc)
 		for(; nmof < argc; nmof++) {
 
 			motifCount   = 0;
-			motifCount  += count_cutsite(argv[nmof], fai, NULL, i);
+			motifCount  += count_cutsite(strdup(argv[nmof]), fai, NULL, i);
 
 			if(motifCount < 0) {
 				fprintf(stderr, "FATAL something went wrong in %s %i\n", __func__, i );
@@ -251,6 +250,7 @@ struct sequenceInfo * destroy_sequence_info(struct sequenceInfo * seqInfo){
 	for(i = 0; i < seqInfo->ncutters; i++) {
 		free(seqInfo->cutter_motifs[i]);
 	}
+	free(seqInfo->cutter_motifs);
 
 	for(i = 0; i < seqInfo->nseq; i++) {
 		free(seqInfo->dat[i].cutcount);
@@ -258,6 +258,8 @@ struct sequenceInfo * destroy_sequence_info(struct sequenceInfo * seqInfo){
 
 	fai_destroy(seqInfo->fai);
 
+	free(seqInfo->dat);
+	free(seqInfo);
 
 	seqInfo = NULL;
 	return seqInfo;
