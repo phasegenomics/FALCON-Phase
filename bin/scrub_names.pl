@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+# vim: ts=8 :
 use strict;
 use warnings;
 use Getopt::Long;
@@ -79,7 +80,7 @@ HAP: while (<$INB>) {
     }
     else{
         chomp;
-	$_ =~ /^>(.*F_[0-9]+)/;
+        $_ =~ /^>(.*F_[0-9]+)/;
         my $h_name = "$1";
         print $OUTB ">$h_name\n";
         push @haplotigs, $h_name;
