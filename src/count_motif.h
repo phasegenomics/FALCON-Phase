@@ -15,7 +15,7 @@
 #include "string_parser.h"
 
 struct sequence{
-  char         * name;
+  char const   * name;
   uint32_t       slen;
   uint32_t * cutcount;
 };
@@ -38,8 +38,10 @@ struct sequenceInfo{
  * @param  seqName    [description]
  * @param  seq_idx    [description]
  * @return            [description]
+ 
+ This will take ownership of seqName is free it.
  */
-int32_t count_cutsite(char * motif,   faidx_t * fai, const char * seqName, int seq_idx);
+int32_t count_cutsite(char * motif,   faidx_t * fai, char * seqName, int seq_idx);
 
 /**
  * [count_motif_runner description]

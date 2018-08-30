@@ -81,7 +81,7 @@ HAP: while (<$INB>) {
     else{
         chomp;
         # Allow new Unzip naming (which we have reverted).
-        if (not ($_ =~ /^>(.*F(?:p\d+)_[0-9]+)/)) {
+        if (not ($_ =~ /^>(.*F(?:p\d+)?_[0-9]+)/)) {
             die "Regex did not match $_";
         }
         my $h_name = "$1";

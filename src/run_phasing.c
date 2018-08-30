@@ -203,13 +203,13 @@ int parse_command_line_phasing(char ** argv, int argc)
 int normalize_matrix_phasing(struct matrix * mat, struct sequenceInfo * seq)
 {
 
-	double * mins = (double *)malloc(sizeof(double)*mat->n1);
+	//double * mins = (double *)malloc(sizeof(double)*mat->n1);
 
 	datum i,j,k;
 
-	for(i = 0; i < mat->n1; i++) {
-		mins[i] = DBL_MAX;
-	}
+	//for(i = 0; i < mat->n1; i++) {
+	//	mins[i] = DBL_MAX;
+	//}
 
 	int n_cutters = seq->ncutters;
 
@@ -339,6 +339,7 @@ struct line_data * parse_index_file(const char * fn){
 
 				assert(ld->overlaps[i].label_one !=   ld->overlaps[i].label_two);
 				i++;
+				free(indstr);
 			}
 		}
 
@@ -544,10 +545,12 @@ int run_phasing(char ** argv, int argc)
 	srand(seed);
 
 
-	char * cutsite_fn = malloc(strlen(global_opts_phasing.prefix) + 12);
-	char * data_fn    = malloc(strlen(global_opts_phasing.prefix) + 12);
-	char * results_fn = malloc(strlen(global_opts_phasing.prefix) + 12);
-
+	char * cutsite_fn = malloc(strlen(global_opts_phasing.prefix) + 11);
+	char * data_fn    = malloc(strlen(global_opts_phasing.prefix) + 11);
+	char * results_fn = malloc(strlen(global_opts_phasing.prefix) + 13);
+	cutsite_fn[0] = '\0';
+	data_fn[0] = '\0';
+	results_fn[0] = '\0';
 	strcat(cutsite_fn, global_opts_phasing.prefix); strcat(cutsite_fn, ".seqs.txt");
 	strcat(data_fn,    global_opts_phasing.prefix); strcat(data_fn,    ".data.txt");
 	strcat(results_fn, global_opts_phasing.prefix); strcat(results_fn, ".results.txt");
@@ -577,7 +580,6 @@ int run_phasing(char ** argv, int argc)
 		return(1);
 	}
 
-	if(sInfo == NULL) return 1;
 	print_sequenceInfo(cutsites, sInfo);
 
 	// read the matrix
@@ -595,6 +597,9 @@ int run_phasing(char ** argv, int argc)
 	// cleanup allocated structures
 	destroy_matrix(link_counts);
 	destroy_sequence_info(sInfo);
+	free(results_fn);
+	free(data_fn);
+	free(cutsite_fn);
 
 	return 0;
 
