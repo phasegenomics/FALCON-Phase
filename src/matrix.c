@@ -90,10 +90,11 @@ struct matrix * init_matrix(const datum n1, const datum n2)
 
 void destroy_matrix(struct matrix * m)
 {
-        datum i = m->n1;
+        datum i = 0; // was m->n1 a typo?
         for(; i < m->n1; i++) {
                 free(m->dat[i]);
         }
+        free(m->dat);
         free(m);
 }
 

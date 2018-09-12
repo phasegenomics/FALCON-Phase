@@ -12,19 +12,20 @@
 #include <getopt.h>
 #include "htslib/faidx.h"
 #include "dna.h"
-
-
+#include "string_parser.h"
 
 struct sequence{
-  char     * name;
-  int        slen;
-  uint32_t   cutcount;
+  char const   * name;
+  uint32_t       slen;
+  uint32_t * cutcount;
 };
 
 struct sequenceInfo{
-    int nseq;
-    struct sequence * dat;
-    faidx_t * fai;
+  uint32_t          nseq;
+  uint32_t      ncutters;
+  char **       cutter_motifs;
+  struct sequence * dat;
+  faidx_t * fai;
 };
 
 
@@ -37,8 +38,10 @@ struct sequenceInfo{
  * @param  seqName    [description]
  * @param  seq_idx    [description]
  * @return            [description]
+ 
+ This will take ownership of seqName is free it.
  */
-int32_t count_cutsite(char * motif,   faidx_t * fai, const char * seqName, int seq_idx);
+int32_t count_cutsite(char * motif,   faidx_t * fai, char * seqName, int seq_idx);
 
 /**
  * [count_motif_runner description]

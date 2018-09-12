@@ -50,7 +50,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-
+#include <string.h>
 #include "string_parser.h"
 
  int scan_s(char *str, int str_len, int *s, int *e, const char delim) {
@@ -76,7 +76,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    word = (char *) malloc((*e-*s+1)*sizeof(char));
 
 
-   char * endptr = stpncpy(word, str + *s, *e-*s) ;
+   strncpy(word, str + *s, *e-*s) ;
    word[*e-*s] = '\0';
    *s = *e + 1;
 

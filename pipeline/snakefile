@@ -38,7 +38,7 @@ rule dummy :
 
 rule emit_haplotigs :
      message    : "[info] emitting phased haplotigs"
-     input      : EH=config['emit'], PH="phasing/{sample}.phased.txt", BC="mince/{sample}.BC.bed", FA="{sample}.p_h_ctg.fa", BED=config['bedtools']
+     input      : EH=config['emit'], PH="phasing/{sample}.results.txt", BC="mince/{sample}.BC.bed", FA="{sample}.p_h_ctg.fa", BED=config['bedtools']
      output     : F0="output/{sample}.phased.0.fasta", F1="output/{sample}.phased.1.fasta", B0="output/{sample}.phased.0.bed", B1="output/{sample}.phased.1.bed"
      params     : FMT=config['sample']['output_format']
      shell      : """
@@ -69,11 +69,11 @@ rule prep_emit  :
 rule phase      :
     message     : "[info] running falcon-phase binary"
     input       : IDX="phasing/{sample}.ov_index.txt", FA="mince/{sample}.minced.fasta", BINMAT="phasing/{sample}.binmat",  FP=config['falcon_phase']
-    output      : "phasing/{sample}.phased.txt"
+    output      : "phasing/{sample}.results.txt"
     params      : PER=_get_PER, ENZ=_get_ENZYME
     shell       : """
 
-        {input.FP} phase -f {input.FA} -b {input.BINMAT} -m {params.ENZ} -i {input.IDX} -p tmp -s {params.PER} > {output}
+    {input.FP} phase -f {input.FA} -b {input.BINMAT} -m {params.ENZ} -i {input.IDX} -p phasing/{wildcards.sample} -n {params.PER} 
     """
 
 rule index_pair :

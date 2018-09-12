@@ -248,6 +248,7 @@ int bam2lachesis(const char * fn_in, const char * fn_out, int type){
 								bam_hdr_destroy(header);
 
 
+								hts_close(h);
 								return 0;
 
 }

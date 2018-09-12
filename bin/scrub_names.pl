@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+# vim: ts=8 :
 use strict;
 use warnings;
 use Getopt::Long;
@@ -79,7 +80,10 @@ HAP: while (<$INB>) {
     }
     else{
         chomp;
-	$_ =~ /^>(.*F_[0-9]+)/;
+        # Allow new Unzip naming (which we have reverted).
+        if (not ($_ =~ /^>(.*F(?:p\d+)?_[0-9]+)/)) {
+            die "Regex did not match $_";
+        }
         my $h_name = "$1";
         print $OUTB ">$h_name\n";
         push @haplotigs, $h_name;
@@ -88,9 +92,10 @@ HAP: while (<$INB>) {
 
 foreach my $k (@haplotigs){
     my @sname = split /_/, $k;
+    $sname[0] =~ s/p\d+//;
     if(defined $primaries{$sname[0]}){
 	print "$sname[0]\t$k\n";
-}
+    }
 }
 
 #-----------------------------------------------------------------------------
