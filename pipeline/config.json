@@ -10,7 +10,7 @@
 	"falcon_phase"	: "/path/to/FALCON-Phase/bin/falcon-phase",
 	"falcon_oi"	: "/path/to/FALCON-Phase/bin/primary_contig_index.pl",
 	"bedtools"	: "/path/to/bedtools",
-	"emit"		: "/path/to/FALCON-Phase/bin/emit_haplotigs.py",
+	"emit"		: "/path/to/FALCON-Phase/bin/emit_haplotigs.pl",
 	"bwa"		: {
 		"path"	: "/path/to/bwa",
 		"cpu"	: "24"
