@@ -55,8 +55,8 @@ PRI: while (<$IN>) {
     }
     else{
 	chomp;
-	$_ =~ /^>(.*F(?:p\d+)?)/;
-	my $p_name = "$1";
+	$_ =~ /^>(.*)F/;
+	my $p_name = "$1F";
 	print $OUT ">$p_name\n";
 	$primaries{$p_name} = 1;
     }
@@ -92,7 +92,7 @@ HAP: while (<$INB>) {
 
 foreach my $k (@haplotigs){
     my @sname = split /_/, $k;
-#    $sname[0] =~ s/p\d+//;
+    $sname[0] =~ s/p\d+//;
     if(defined $primaries{$sname[0]}){
 	print "$sname[0]\t$k\n";
     }
