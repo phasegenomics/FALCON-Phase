@@ -6,6 +6,7 @@ FALCON-Phase integrates [PacBio](https://www.pacb.com/) long-read assemblies wit
 
 Read about the method and its performance in our [preprint](http://biorxiv.org/cgi/content/short/327064v1).
 
+Version 2 of this method will be maintained in the pb-assembly bioconda package. See [here](https://github.com/PacificBiosciences/pb-assembly) for details of the full suite of tools.
 
 ## Recommended Usage Case :monkey:
 
@@ -69,7 +70,7 @@ If you are running on a cluster that uses modules, you can load the binaries wit
 ```
 module load snakemake
 module load bwa/0.7.17
-module load bedtools/2.25.0
+module load bedtools/2.27.1
 module load samtools/1.7
 module load mummer/4.0.0
 ```
@@ -217,8 +218,8 @@ The binary matrix and index file are input to the FALCON-Phase algorithm to assi
         ├── phasing/
                 ├── test.binmat/            # binary matric of normalized Hi-C mappings
                 ├── test.ov_index.txt/      # index file of ordering of minced contigs on each primary contig and A-B phase block pairings
-                ├── test.phased.txt/        # phase assignment for each A-B phase block pair
-        
+                ├── test.results.txt/        # phase assignment for each A-B phase block pair
+	        ├── test.seq.txt/        # summary of RE cut sites for each minced fragment
 
 ### Emission of Phased Haplotigs (Workflow Step 6)
 
