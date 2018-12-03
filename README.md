@@ -228,7 +228,7 @@ The binary matrix and index file are input to the FALCON-Phase algorithm to assi
 
 The `results.txt` file has the following columns:
 
-1: primary contig ID
+1. primary contig ID
 2. phase 0 haplotig ID
 3. phase 1 haplotig ID
 4. proportion of simulations in this configuration
