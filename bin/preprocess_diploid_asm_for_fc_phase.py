@@ -10,7 +10,7 @@ from Bio import SeqIO
 
 FC_PAT = re.compile(r'([0-9]{6}F[_0-9]*)')
 
-def parse_args(desc):
+def parse_args():
     '''parse command-line args
 
     Args:
@@ -19,13 +19,15 @@ def parse_args(desc):
     Returns:
         args (dict): dict of the form {arg_name: arg_value}
     '''
-    parser = argparse.ArgumentParser(description=desc)
+    parser = argparse.ArgumentParser(description="Preprocess Falcon-Unzip assemblies for Falcon-Phase analysis.\n" \
+                                     "Scrubs the contig names to proper format, creates mapping file.")
     parser.add_argument("-c", "--combined_fasta", required=False, default=None,
-                        help="Assembly fasta with both p and h contigs to separate and map to each other.")
-    parser.add_argument("-p", "--p_contig_fasta", required=False, default=None,
-                        help="Assembly fasta with p contigs only. If supplied, requires also h contig fasta (-h).")
-    parser.add_argument("-h", "--h_contig_fasta", required=False, default=None,
-                        help="Assembly fasta with h contigs only. If supplied, requires also p contig fasta (-p).")
+                        help="Assembly fasta with both p and h contigs to separate and map to each other." \
+                        " If not supplied, both -P and -H must be supplied.")
+    parser.add_argument("-P", "--p_contig_fasta", required=False, default=None,
+                        help="Assembly fasta with p contigs only. If supplied, requires also h contig fasta (-H).")
+    parser.add_argument("-H", "--h_contig_fasta", required=False, default=None,
+                        help="Assembly fasta with h contigs only. If supplied, requires also p contig fasta (-P).")
     parser.add_argument("-o", "--outfile_prefix", required=True,
                         help="Prefix for new files to be written.")
 
@@ -58,7 +60,7 @@ def get_p_of_h_tig(scrubbed_h_id):
 def parse_combined_fasta(fasta_path):
     '''parse the combined fasta, collect p and h tigs separately in lists of SeqRecords.
     '''
-    print("parsing combined fasta of p and h tigs.")
+    print("parsing combined fasta of p and h tigs {0}.".format(fasta_path))
     handle = SeqIO.parse(fasta_path, "fasta")
     p_tigs = []
     h_tigs = []
@@ -79,9 +81,49 @@ def parse_combined_fasta(fasta_path):
             h_tigs.append(record)
         else:
             print(record, scrubbed_id)
-            raise ValueError("neither p nor h contig! is this falcon-unzip-derived??")
+            raise ValueError("neither p nor h contig! is this assembly falcon-unzip-derived??")
     print("found", len(p_tigs), "p tigs and", len(h_tigs), "h tigs")
     return p_tigs, h_tigs
+
+def parse_separated_fasta(fasta_path):
+    '''Parse the fasta for either p or h contigs, NOT combined fasta.
+
+    Args:
+        fasta_path (str): path to fasta file
+
+    Returns:
+        [SeqIO.SeqRecord]: list of contig sequence records.
+
+    '''
+    print("parsing separated fasta {0}.".format(fasta_path))
+    handle = SeqIO.parse(fasta_path, "fasta")
+    tigs = []
+    all_records = set()
+    p_or_h = ""
+    for record in handle:
+        scrubbed_id = scrub_name(record.id)
+        record.id = scrubbed_id
+        record.name = None
+        record.description = ""
+        if scrubbed_id in all_records:
+            raise ValueError("tig with name {0} appears multiple times!!\nnote that " \
+                            "tig names are scrubbed back to falcon-unzip output!".format(scrubbed_id)
+                            )
+        all_records.add(scrubbed_id)
+        tigs.append(record)
+        if is_p_contig(scrubbed_id):
+            if p_or_h == "h":
+                raise ValueError("separated file contains both p and h tigs!! Try as -c instead.")
+            p_or_h = "p"
+        elif is_h_contig(scrubbed_id):
+            if p_or_h == "p":
+                raise ValueError("separated file contains both p and h tigs!! Try as -c instead.")
+            p_or_h = "h"
+        else:
+            print(record, scrubbed_id)
+            raise ValueError("neither p nor h contig! is this assembly falcon-unzip-derived??")
+    print("found {0} {1} tigs!".format(len(tigs), p_or_h))
+    return tigs
 
 def make_name_mappings(p_tigs, h_tigs):
     '''create name_mappings of p to h tigs for falcon-phase, write it out to a file. 
@@ -112,8 +154,8 @@ def main():
     if c_args["combined_fasta"] is not None:
         p_tigs, h_tigs = parse_combined_fasta(c_args["combined_fasta"])
     elif c_args["p_contig_fasta"] is not None and c_args["h_contig_fasta"] is not None:
-        p_tigs = SeqIO.parse(c_args["p_contig_fasta"], "fasta")
-        h_tigs = SeqIO.parse(c_args["h_contig_fasta", "fasta"])
+        p_tigs = parse_separated_fasta(c_args["p_contig_fasta"])
+        h_tigs = parse_separated_fasta(c_args["h_contig_fasta"])
     else:
         ValueError("Script requires either a combined fasta (-c arg) or both p and h fastas (-p and -h args)." \
                    "If both supplied, combined FASTA is used.")
