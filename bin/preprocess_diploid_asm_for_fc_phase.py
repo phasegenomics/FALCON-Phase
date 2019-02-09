@@ -1,9 +1,8 @@
+#!/usr/bin/env python
 # take a combined p and h contig fasta, split it into p and h contigs,
 # and create name_mapping.txt file for falcon-phase.
 
 from __future__ import print_function
-import os
-import sys
 import re
 import argparse
 from Bio import SeqIO
