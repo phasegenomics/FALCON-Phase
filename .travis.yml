@@ -1,5 +1,13 @@
 matrix:
   include:
+  include:
+    - language: python
+      sudo: required
+      python: 3.6
+      before_install:
+       - pip install biopython
+      script: python -m unittest discover tests
+
     - language: cpp
       sudo: required
       compiler:
@@ -14,11 +22,3 @@ matrix:
       os:
        - linux
       script: cd src && make
-
-  include:
-    - language: python
-      sudo: required
-      python: 3.6
-      before_install:
-       - pip install biopython
-      script: python -m unittest discover tests
