@@ -43,14 +43,14 @@ class MyTestCase(unittest.TestCase):
         p_names = sorted(p_tig.id for p_tig in p_tigs)
         h_names = sorted(h_tig.id for h_tig in h_tigs)
         self.assertEqual(p_names, ["000001F", "000002F", "000003F", "000004F"])
-        self.assertEqual(h_names, ["000001F_001", "000002F_001", "000003F_001", "000003F_002"])
+        self.assertEqual(h_names, ["000001F_001", "000002F_001", "000003F_001", "000003F_002", "000005F_99"])
 
     def test_parse_combined_fasta(self):
         p_tigs, h_tigs = pp.parse_combined_fasta(self.both_file)
         p_names = sorted(p_tig.id for p_tig in p_tigs)
         h_names = sorted(h_tig.id for h_tig in h_tigs)
         self.assertEqual(p_names, ["000001F", "000002F", "000003F", "000004F"])
-        self.assertEqual(h_names, ["000001F_001", "000002F_001", "000003F_001", "000003F_002"])
+        self.assertEqual(h_names, ["000001F_001", "000002F_001", "000003F_001", "000003F_002", "000005F_99"])
 
     def test_name_mappings(self):
         p_tigs, h_tigs = pp.parse_combined_fasta(self.both_file)
@@ -58,6 +58,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(["000001F_001"], name_mappings["000001F"])
         self.assertEqual(["000003F_001", "000003F_002"], name_mappings["000003F"])
         self.assertEqual([], name_mappings["000004F"])
+        self.assertEqual(["000005F_99"], omissions)
 
 if __name__ == '__main__':
     unittest.main()
