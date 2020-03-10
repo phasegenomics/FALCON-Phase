@@ -47,9 +47,11 @@ We have provided a small pseudo test dataset ([sample info](https://www.ncbi.nlm
 
 1. Install the pipeline (as shown in the Install Process)
 
-2. Clean the headers of the test FALCON-Unzip assembly files and generate the name_mapping.txt file. We have provides a perl script to do this for you: `scrub_names.pl` in the bin directory. The script removes the "|arrow" suffix on the FASTA headers and makes new files with the ".cleaned" suffix on the base name.
+2. Clean the headers of the test FALCON-Unzip assembly files and generate the name_mapping.txt file. We include a script `bin/preprocess_diploid_asm_for_fc_phase.py` that can be used to generate this file and (try to) clean up contig names that have been modified. (there is also a deprecated perl script to do this for you: `scrub_names.pl` in the bin directory. The script removes the "|arrow" suffix on the FASTA headers and makes new files with the ".cleaned" suffix on the base name.)
 
 Usage:
+
+```bin/preprocess_diploid_asm_for_fc_phase.py -P p-contigs.fa -H h-contigs.fa -o cleaned_contigs  # writes name_mappings.txt in working directory```
 
 ```scrub_names.pl p-contigs.fa h-contigs.fa > name_mapping.txt```
 
