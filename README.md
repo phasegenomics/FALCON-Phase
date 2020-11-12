@@ -29,6 +29,7 @@ The version numbers of the dependencies are listed below, but new/older versions
 + **BEDTools    (2.27.1)**              -  Creating AB pair index 
 + **HSTLIB      (1.5 or greater)**      -  Internal dependency (bundled with FALCON-Phase)
 + **SAMTOOLS    (1.5 or greater)**      -  Indexing fasta files
++ **Biopython    (1.6.0 or greater)**      -  Running `bin/preprocess_diploid_asm_for_fc_phase.py`
 
 
 
