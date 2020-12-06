@@ -1,56 +1,3 @@
-/*
-   Author: Zev Kronenberg
-   Contact :zev@phasegenomics.com
-   Date: May 17th 2018
-
-   The Clear BSD + Attribution License
-
-   Copyright (c) 2018, Pacific Biosciences of California, Inc. and Phase Genomics, Inc.
-   All rights reserved.
-
-   Redistribution and use in source and binary forms, with or without modification, are
-   permitted (subject to the limitations in the disclaimer below) provided that the
-   following conditions are met:
-
-   1.Redistributions of source code must retain the above copyright notice,
-   this list of conditions and the following disclaimer.
-
-   2.Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-
-   3.All advertising materials mentioning features or use of this software
-   must display the following acknowledgement:
-   This <product/service> includes <software/the use of software> developed
-   by Pacific Biosciences of California, Inc. and Phase Genomics, Inc.
-
-   4.Distributions of data generated through the use of this software as
-   part of a service provided by a for-profit organization must be accompanied
-   by the above copyright notice, this list of conditions, the following
-   acknowledgement and the disclaimer below:
-   This data was generated using software developed by Pacific Biosciences of
-   California, Inc. and Phase Genomics, Inc.
-
-   5.Neither the names of the copyright holders nor the names of their
-   contributors may be used to endorse or promote products derived from this
-   software without specific prior written permission.
-
-   NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY’S PATENT RIGHTS ARE GRANTED BY
-   THIS LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
-   CONTRIBUTORS “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT
-   NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-   PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS
-   OR THEIR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-   PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
-   OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-   WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
-   OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-
-
 #include "bam_filt.h"
 
 
@@ -72,25 +19,27 @@ struct bam_filt_opts {
 void print_bam_filt_usage(void){
 	fprintf(stderr, "\n    usage: matlock bamfilt [options] -i input.[cram|bam|sam] -o output.bam \n\n"              );
 	fprintf(stderr, "         Required:\n"                                                                             );
-	fprintf(stderr, "         -i -         Input file.\n"                                                              );
-	fprintf(stderr, "         -o -         Ouput file.\n\n"                                                            );
-	fprintf(stderr, "         Options:\n"                                                                              );
-	fprintf(stderr, "         -h -          Print help statement.\n"                                                   );
-	fprintf(stderr, "         -m - <INT>    MapQ filter. [20]    \n"                                                   );
-	fprintf(stderr, "         -e - <INT>    Max edit distance. [5]\n"                                                  );
-	fprintf(stderr, "         -l - <INT>    Min target seq-length. [0]\n"                                              );
-	fprintf(stderr, "         -x - <STRING> Comma separated list of seqids to exclude/include. [exclude]\n"            );
-	fprintf(stderr, "                       This option should be used with the binary flag 64 (-f 64).\n"             );
-	fprintf(stderr, "         -y -          incude -x rather than exclude [exclude]\n"                                 );
-	fprintf(stderr, "         -f - <INT>    Binary flag filter:\n"                                                     );
-	fprintf(stderr, "              SAME_SEQID  =  2\n"                                                                 );
-	fprintf(stderr, "              LOW_MAPQ    =  4\n"                                                                 );
-	fprintf(stderr, "              XA_SA       =  8\n"                                                                 );
-	fprintf(stderr, "              NM          = 16\n"                                                                 );
-	fprintf(stderr, "              SMALLCONTIG = 32\n"                                                                 );
-	fprintf(stderr, "              EXCLUDE     = 64\n"                                                                 );
-	fprintf(stderr, "              SA_ONLY     = 128\n"                                                                );
-	fprintf(stderr, "              The default is 60 =  LOW_MAPQ | XA_SA | NM | SMALLCONTIG\n\n"                       );
+	fprintf(stderr, "    -i -         Input file.\n"                                                        );
+	fprintf(stderr, "    -o -         Ouput file.\n\n"                                                      );
+	fprintf(stderr, "         Options:\n"                                                     );
+	fprintf(stderr, "    -h -          Print help statement.\n"                                                   );
+	fprintf(stderr, "    -m - <INT>    MapQ filter. [20]    \n"                                                             );
+	fprintf(stderr, "    -e - <INT>    Max edit distance. [5]\n"                                                          );
+	fprintf(stderr, "    -l - <INT>    Min target seq-length. [0]\n"                                                          );
+	fprintf(stderr, "    -x - <STRING> Comma separated list of seqids to exclude/include. [exclude]\n"                                   );
+	fprintf(stderr, "                  This option should be used with the binary flag 64 (-f 64).\n"                                             );
+	fprintf(stderr, "    -y -          incude -x rather than exclude [exclude]\n"                                                    );
+	fprintf(stderr, "    -f - <INT>    Binary flag filter:\n\n"                                                    );
+	fprintf(stderr, "                  SAME_SEQID  =  2\n"                                                                 );
+	fprintf(stderr, "                  LOW_MAPQ    =  4\n"                                                                 );
+	fprintf(stderr, "                  XA_SA       =  8\n"                                                                 );
+	fprintf(stderr, "                  NM          = 16\n"                                                                 );
+	fprintf(stderr, "                  SMALLCONTIG = 32\n"                                                                 );
+	fprintf(stderr, "                  EXCLUDE     = 64\n"                                                                 );
+	fprintf(stderr, "                  SA_ONLY     = 128\n"                                                                );
+	fprintf(stderr, "                  UNMAPPED    = 256\n"                                                                );
+	fprintf(stderr, "                  DUPLICATE   = 1024\n"                                                                );
+	fprintf(stderr, "                  The default is 1300 =  LOW_MAPQ | NM | DUPLICATE | UNMAPPED \n\n"                                            );
 
 }
 
@@ -113,37 +62,6 @@ char *inputString(FILE* fp, size_t size){
 	return realloc(str, sizeof(char)*len);
 }
 
-int mod_dup_header( bam_hdr_t * dup){
-
-
-	bamfilt_global_opts.tid_remap = malloc( sizeof(int) * dup->n_targets);
-
-	int i;
-	int pos = -1;
-	int nretained = 0;
-	for(i = 0; i < dup->n_targets; i++) {
-
-		if(bamfilt_global_opts.exclude_lookup[i] != 0) {
-			free(dup->target_name[i]);
-			continue;
-		}
-		else{
-			pos++;
-			nretained++;
-		}
-
-		bamfilt_global_opts.tid_remap[i] = pos;
-
-		dup->target_name[pos] = dup->target_name[i];
-		dup->target_len[pos]  = dup->target_len[i];
-
-	}
-	dup->n_targets = nretained;
-	fprintf(stderr, "INFO: number of retained seqids in binary header: %i\n", dup->n_targets);
-	return 0;
-}
-
-
 
 int parse_length_exclude(bam_hdr_t * header){
 	int i = 0;
@@ -156,7 +74,6 @@ int parse_length_exclude(bam_hdr_t * header){
 }
 
 int parse_target_list(bam_hdr_t *header){
-
 
 	bamfilt_global_opts.exclude_lookup = malloc(sizeof(int) * header->n_targets);
 	memset(bamfilt_global_opts.exclude_lookup, 0, header->n_targets * sizeof(int));
@@ -171,6 +88,10 @@ int parse_target_list(bam_hdr_t *header){
 	if(header->n_targets == 0) {
 		fprintf(stderr, "WARNING : no sequences in bam header : in : %s\n", __func__);
 	}
+
+	// strtok will cause a seg fault if you giv it a NULL at least for Unbuntu
+	if(bamfilt_global_opts.exclude_str == NULL) return 0;
+
 	char * pch = strtok (bamfilt_global_opts.exclude_str,",");
 	uint32_t nseq = 0;
 	while (pch != NULL)
@@ -200,7 +121,7 @@ int parse_bamfilt_command_line(char ** argv, int argc)
 	bamfilt_global_opts.out            = NULL;
 	bamfilt_global_opts.mq_filter      = 20;
 	bamfilt_global_opts.ed_filter      = 5;
-	bamfilt_global_opts.bin_filter    |= LOW_MQ | XA_SA | NM | SMALLCONTIG;
+	bamfilt_global_opts.bin_filter    |= LOW_MQ | NM | DUPLICATE | UNMAPPED;
 	bamfilt_global_opts.min_t_len      = 0;
 	bamfilt_global_opts.exclude_str    = NULL;
 	bamfilt_global_opts.exclude_lookup = NULL;
@@ -236,6 +157,7 @@ int parse_bamfilt_command_line(char ** argv, int argc)
 		case 'm':
 		{
 			bamfilt_global_opts.mq_filter = atoi(optarg);
+			bamfilt_global_opts.bin_filter |= LOW_MQ;
 			break;
 		}
 		case 'y':
@@ -246,6 +168,7 @@ int parse_bamfilt_command_line(char ** argv, int argc)
 		case 'e':
 		{
 			bamfilt_global_opts.ed_filter = atoi(optarg);
+			bamfilt_global_opts.bin_filter |= NM;
 			break;
 		}
 		case 'f':
@@ -256,6 +179,7 @@ int parse_bamfilt_command_line(char ** argv, int argc)
 		case 'l':
 		{
 			bamfilt_global_opts.min_t_len = atoi(optarg);
+			bamfilt_global_opts.bin_filter |= SMALLCONTIG;
 			break;
 		}
 		case 'x':
@@ -263,8 +187,8 @@ int parse_bamfilt_command_line(char ** argv, int argc)
 			bamfilt_global_opts.exclude_str = optarg;
 			if( access( bamfilt_global_opts.exclude_str, F_OK ) != -1 ) {
 				FILE * exclude_fn = fopen(bamfilt_global_opts.exclude_str, "r");
-				bamfilt_global_opts.exclude_str = inputString(exclude_fn, 1000);
-				fclose(exclude_fn);
+				bamfilt_global_opts.exclude_str = bamfilt_global_opts.exclude_str = inputString(exclude_fn, 1000);
+				close(exclude_fn);
 				bamfilt_global_opts.bin_filter |= EXCLUDE;
 			}
 			break;
@@ -306,8 +230,12 @@ int _process_pair_bamfilt(bam_hdr_t *header, int mapqf, int editf, uint32_t tlen
 
 	int binflag = 0;
 
-	if(bamfilt_global_opts.exclude_lookup[rp.read1->core.tid] == 1) binflag   |= EXCLUDE;
-	if(bamfilt_global_opts.exclude_lookup[rp.read2->core.tid] == 1) binflag   |= EXCLUDE;
+	if(rp.read1->core.flag & 4 || rp.read2->core.flag & 4  ) {
+		return UNMAPPED;
+	}
+
+	if(bamfilt_global_opts.exclude_lookup[rp.read1->core.tid] == 1) binflag |= EXCLUDE;
+	if(bamfilt_global_opts.exclude_lookup[rp.read2->core.tid] == 1) binflag |= EXCLUDE;
 
 	if(header->target_len[rp.read1->core.tid] < tlen_min) binflag |= SMALLCONTIG;
 	if(header->target_len[rp.read2->core.tid] < tlen_min) binflag |= SMALLCONTIG;
@@ -315,7 +243,7 @@ int _process_pair_bamfilt(bam_hdr_t *header, int mapqf, int editf, uint32_t tlen
 	// mates must map to different contigs
 	if(rp.read1->core.tid == rp.read2->core.tid) binflag |= SAME_SEQID;
 
-	// alignment quality must be greater than 40;
+	// alignment quality must be greater than mapqf;
 	if(rp.read1->core.qual < mapqf ) binflag |= LOW_MQ;
 	if(rp.read2->core.qual < mapqf ) binflag |= LOW_MQ;
 
@@ -350,6 +278,10 @@ int _process_pair_bamfilt(bam_hdr_t *header, int mapqf, int editf, uint32_t tlen
 		if(bam_aux2i(nm2) > editf) binflag |= NM;
 	}
 
+	// filter out duplicates
+	if (rp.read1->core.flag & DUPLICATE) binflag |= DUPLICATE;
+	if (rp.read2->core.flag & DUPLICATE) binflag |= DUPLICATE;
+
 	return binflag;
 }
 
@@ -366,8 +298,8 @@ int filter_bam(char ** argv, int argc){
 		exit(1);
 	}
 
-	int flag_counts[500];
-	memset(&flag_counts, 0, 500* sizeof(int));
+	int flag_counts[5000];
+	memset(&flag_counts, 0, 5000* sizeof(int));
 
 	htsFile * h = hts_open(bamfilt_global_opts.in, "r");
 
@@ -394,17 +326,13 @@ int filter_bam(char ** argv, int argc){
 	samFile *output = sam_open(bamfilt_global_opts.out, "wb");
 
 	parse_target_list(header);
-
 	/*
 	   This must go after parse_target_list.
 	 */
 	parse_length_exclude(header);
 
-	bam_hdr_t * dup_header = bam_hdr_dup(header);
 
-	mod_dup_header(dup_header );
-
-	if(sam_hdr_write(output, dup_header) != 0) {
+	if(sam_hdr_write(output, header) != 0) {
 		fprintf(stderr, "FATAL: failed to read the write \"%s\" \n", bamfilt_global_opts.out);
 		return 1;
 	}
@@ -416,7 +344,7 @@ int filter_bam(char ** argv, int argc){
 	int okay;
 	int r1;
 	int r2;
-	long int c = 0;
+	long int c = -1;
 
 	char * rn1;
 	char * rn2;
@@ -445,6 +373,8 @@ int filter_bam(char ** argv, int argc){
 		flag_counts[flag & SMALLCONTIG]  += 1;
 		flag_counts[flag & EXCLUDE    ]  += 1;
 		flag_counts[flag & SA_ONLY    ]  += 1;
+		flag_counts[flag & DUPLICATE  ]  += 1;
+		flag_counts[flag & UNMAPPED   ]  += 1;
 
 		if((c % 1000000) == 0) {
 			fprintf(stderr, "INFO: parsed %ld read pairs\n", c);
@@ -453,26 +383,18 @@ int filter_bam(char ** argv, int argc){
 		if((flag & bamfilt_global_opts.bin_filter) == 0) {
 			flag_counts[200] += 1;
 
-			rn1 =  header->target_name[rp.read1->core.tid];
-			rn2 =  dup_header->target_name[bamfilt_global_opts.tid_remap[rp.read1->core.tid]];
-			if(strcmp(rn1, rn2) != 0) {
-				fprintf(stderr, "FATAL: removing sequences from header failed %s %s %i %i\n", rn1, rn2, rp.read1->core.tid, bamfilt_global_opts.tid_remap[rp.read1->core.tid]);
-				return 1;
+			okay = sam_write1(output, header, rp.read1);
+			if(okay < -1) {
+				fprintf(stderr, "[FATAL] issue writing bam in %s near line %s \n", __FILE__, __LINE__);
+				exit(1);
 			}
-
-			// This operation must be handled with great care.
-			rp.read1->core.tid = bamfilt_global_opts.tid_remap[rp.read1->core.tid];
-			rp.read2->core.tid = bamfilt_global_opts.tid_remap[rp.read2->core.tid];
-
-			rp.read1->core.mtid = bamfilt_global_opts.tid_remap[rp.read1->core.mtid];
-			rp.read2->core.mtid = bamfilt_global_opts.tid_remap[rp.read2->core.mtid];
-
-			okay = sam_write1(output, dup_header, rp.read1);
-			okay = sam_write1(output, dup_header, rp.read2);
+			okay = sam_write1(output, header, rp.read2);
+			if(okay < -1) {
+				fprintf(stderr, "[FATAL] issue writing bam in %s near line %s \n", __FILE__, __LINE__);
+				exit(1);
+			}
 		}
 	}
-
-
 
 	bam_destroy1(rp.read1);
 	bam_destroy1(rp.read2);
@@ -483,16 +405,20 @@ int filter_bam(char ** argv, int argc){
 	free(bamfilt_global_opts.covered);
 
 
-	fprintf(stderr, "STATS: mate pair that passed filtering: %i %f%%\n", flag_counts[200], (flag_counts[200] / (double)c) * 100);
-	fprintf(stderr, "STATS: mate pair with low mapq (%i): %i %f%%\n", bamfilt_global_opts.mq_filter, flag_counts[LOW_MQ], (flag_counts[LOW_MQ] / (double)c)*100 );
-	fprintf(stderr, "STATS: mate pair with XA or SA tag: %i %f%%\n", flag_counts[XA_SA], (flag_counts[XA_SA] / (double)c)*100 );
-	fprintf(stderr, "STATS: mate pair with same seqid: %i %f%%\n", flag_counts[SAME_SEQID],(flag_counts[SAME_SEQID]/(double)c)*100);
-	fprintf(stderr, "STATS: mate pair with NM > %i: %i %f%%\n", bamfilt_global_opts.ed_filter, flag_counts[NM], (flag_counts[NM]/(double)c)*100 );
-	fprintf(stderr, "STATS: mate pair on target sequences < %i Bp: %i %f%%\n", bamfilt_global_opts.min_t_len, flag_counts[SMALLCONTIG], (flag_counts[SMALLCONTIG]/(double)c)*100 );
-	fprintf(stderr, "STATS: mate pair in exclude list: %i %f%%\n", flag_counts[EXCLUDE], (flag_counts[EXCLUDE]/(double)c)*100 );
-	fprintf(stderr, "STATS: mate pair with only SA tag: %i %f%%\n", flag_counts[SA_ONLY], (flag_counts[SA_ONLY] / (double)c)*100 );
+	fprintf(stderr, "STATS: mate pair that passed filtering:...... %i %f%%\n", flag_counts[200], (flag_counts[200] / (double)c) * 100);
+	fprintf(stderr, "STATS: mate pair that are not mapped:........ %i %f%%\n", flag_counts[256], (flag_counts[256] / (double)c) * 100);
 
-	fprintf(stderr, "STATS: Total mate pair: %ld\n", c);
+	fprintf(stderr, "STATS: mate pair with low mapq (%i):......... %i %f%%\n", bamfilt_global_opts.mq_filter, flag_counts[LOW_MQ], (flag_counts[LOW_MQ] / (double)c)*100 );
+	fprintf(stderr, "STATS: mate pair with XA or SA tag:.......... %i %f%%\n", flag_counts[XA_SA], (flag_counts[XA_SA] / (double)c)*100 );
+	fprintf(stderr, "STATS: mate pair with same seqid:............ %i %f%%\n", flag_counts[SAME_SEQID],(flag_counts[SAME_SEQID]/(double)c)*100);
+	fprintf(stderr, "STATS: mate pair with NM > %i:................ %i %f%%\n", bamfilt_global_opts.ed_filter, flag_counts[NM], (flag_counts[NM]/(double)c)*100 );
+	fprintf(stderr, "STATS: mate pair on target sequences < %i Bp:. %i %f%%\n", bamfilt_global_opts.min_t_len, flag_counts[SMALLCONTIG], (flag_counts[SMALLCONTIG]/(double)c)*100 );
+	fprintf(stderr, "STATS: mate pair in exclude list:............ %i %f%%\n", flag_counts[EXCLUDE], (flag_counts[EXCLUDE]/(double)c)*100 );
+	fprintf(stderr, "STATS: mate pair with only SA tag:........... %i %f%%\n", flag_counts[SA_ONLY], (flag_counts[SA_ONLY] / (double)c)*100 );
+	fprintf(stderr, "STATS: mate pair with a DUPLICATE flag:...... %i %f%%\n", flag_counts[DUPLICATE], (flag_counts[DUPLICATE] / (double)c)*100 );
+
+	fprintf(stderr, "STATS: Total mate pair:...................... %ld\n", c);
+	fprintf(stderr, "STATS: Total reads:.......................... %ld\n", c*2);
 
 
 	return 0;
